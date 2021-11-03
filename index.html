@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--meta name="robots" content="noindex"-->
+<meta name="theme-color" content="#d3e1f0">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<link rel="shortcut icon" href="gfx/favicon.ico">
+<link rel="icon" href="gfx/favicon.ico">
+<link rel="apple-touch-icon" href="gfx/apple-touch-icon.png">
+
+<!--link rel="canonical" href="https://aidfimonitoring.com/app"/-->
+
+<link rel="stylesheet" href="./app_styles.css">
+<link rel="manifest" href="./manifest.webmanifest">
+
+<!--script src="https://unpkg.com/tesseract.js@v2.0.0-alpha.13/dist/tesseract.min.js"></script>
+<script src='https://unpkg.com/tesseract.js@v2.0.0-alpha.10/dist/tesseract.min.js'></script-->
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+<!-- ****************************************************************** -->
+<!-- ****************************************************************** -->
+<script src="js/eruda.min.js"></script>
+<!--script>eruda.init();</script-->
+<title>WATERWORKS APP</title>
+<script>  
+  var CURR_CLIENT='WATER';
+  var CURR_CLIENTNAME="Office of the Waterworks Operation";
+  var CURR_CLIENTADDRESS="Guihulngan City, Negros Oriental";
+  var CURR_TELNO="410-4810";
+  var CURR_SITE='water';
+  var JBE_API='https://aidfimonitoring.com/water_api/';
+  var pathloc=window.location.origin.substring(0,21);
+  
+  if(window.location.origin.substring(0,21) == 'http://localhost:8080') { 
+    JBE_API=window.location.origin+'/water_api/';  
+    eruda.init();
+  }else if(window.location.origin.substring(0,16) == 'http://localhost') { 
+    JBE_API=window.location.origin+'/water_api/';
+  }
+  //window.navigator.vibrate() && window.navigator.vibrate(100);
+</script> 
+<!-- ****************************************************************** -->
+<!-- ****************************************************************** -->
+
+<style>
+
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 20px;
+  padding: 16px;
+  position: fixed;
+  z-index: 9001;
+  left: 50%;
+  bottom: 100px;
+  font-size: 17px;
+
+  width:80%;
+  left:10%; right:10%;
+  margin:0 auto;
+  height:auto; 
+}
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 100px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 100px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 100px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 100px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+.color_head{
+  background:#3b5998;
+  background:#3475b9;  
+  color:white;
+}
+.color_2{
+  background:#8b9dc3; 
+}
+.color_3{
+  background:#d3e1f0; 
+}
+.color_4{
+  color:yellow;
+  background:red; 
+}
+.color_navy{
+  color:navy; 
+}
+
+
+
+.choose_file {
+    position: relative;
+    display: inline-block;   
+    font: normal 14px Myriad Pro, Verdana, Geneva, sans-serif;
+    color: #7f7f7f;
+    margin-top: 2px;
+    background: white
+}
+.choose_file input[type="file"]{
+    -webkit-appearance:none; 
+    position:absolute;
+    top:0;
+    left:0;
+    opacity:0;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-btn-div_body {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.jvisible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 2s linear;
+}
+.jhidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+</style>
+
+<script>  
+//var vTime = new Date().toLocaleTimeString('it-IT');  
+//var vTime = new Date();
+//var vTime=new Date().getMinutes()+'_'+new Date().getSeconds();
+//alert(vTime);
+  var JBE_ONLINE=true;
+  JBE_ONLINE_NAVI=false;
+  var JBE_MOBILE=true;
+  var PERSIST_GRANTED=false;
+  var JBE2_VER='0.101';
+  var JBE_WORLD=false;
+  var JBE_HOST=0;
+  var thisFile;
+  var jbepass;
+  var JBE2_screen_mode=0;
+  //var JBE2_CLOR='#9900CC';
+  //var JBE2_CLOR='#3b5998'; 
+  var JBE2_CLOR='#3475b9'; 
+  //var JBE2_CLOR='#1f93fa';
+  //var JBE2_CLOR='#1a1e4d';
+  var JBE2_CLOR2='#99ccff'; 
+  var JBE2_CLOR3='#d3e1f0'; 
+  var JBE2_CLOR4='#e8e9ee'; 
+  
+  //JBE2_CLOR='#333f50';
+  JBE2_CLOR2='gray'; 
+  JBE2_CLOR3='darkgray'; 
+  JBE2_CLOR4='lightgray'; 
+
+  var JBE_TXCLOR1='#ffffff'; 
+  var JBE_TXCLOR2='#000000'; 
+  var JBE_TXCLOR3='#ffffff'; 
+  var JBE_TXCLOR4='#ffffff'; 
+
+  var JBE2_ONLINE=false;
+
+  var DB_PROJ=[];  
+  var DB_CODEX=[];  
+  var DB_VIDS=[];  
+  var DB_CHAT=[];
+  var DB_USER=[];
+
+  var V_DESCRP='';
+  var V_UPLOADS='';
+  var V_CHATS='';
+
+  var H_WRAPPER=0;
+  var H_HEADER=0;
+  var H_BODY=0;
+  var H_FOOTER=0;
+  var f_MainPage=true;
+  var f_reload=true;
+
+  var CURR2_BACKER=0;
+
+  const JBE_HEADER = {
+    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Origin": "*"
+  }
+
+  if ('serviceWorker' in navigator) {    
+    navigator.serviceWorker.register('SW_'+CURR_CLIENT+'.js', { scope: './' }).then(function(registration) {
+      console.log('Service worker registration succeeded:', registration);
+    }).catch(function(error) {
+      console.log('Service worker registration failed:', error);
+    });
+  } else {
+    console.log('Service workers are not supported.');
+  }
+  
+  window.addEventListener('load', function() {
+    window.history.pushState({ noBackExitsApp: true }, '');    
+  })
+
+  window.addEventListener('popstate', function(event) {
+    window.history.pushState({ noBackExitsApp: true }, '');
+    //alert('is mainform? :'+f_MainPage);
+    console.log(event.state);
+    if (event.state) {      
+      if(f_MainPage){        
+        window.history.go(0);        
+        console.log('refreshed');
+        //snackBar('Press Back again to Exit');
+        f_reload=true;
+      }
+    }
+  })  
+
+  /***************************************************** */
+
+  function openNav() {    
+    window.history.pushState({ noBackExitsApp: true }, '');
+    f_MainPage=true;
+    
+    //if(CURR_METERNO=='NONE' || CURR_METERNO==null || CURR_METERNO==''){
+    if(!CURR_METERNO){
+      showLogin();
+      return;
+    }
+   
+    //if(CURR_METERNO==null){
+      //plsLogin();
+      //return; 
+    //}
+    
+    if(document.getElementById('menu_open').getAttribute('data-open')==1){
+      closeNav();
+      return;
+    }
+    
+    //document.getElementById('menu_open').innerHTML='&#8592;';
+    document.getElementById('hd_img').src='gfx/jback.png';    
+    //document.getElementById('menu_open').innerHTML='&#8592;';
+    document.getElementById("mySidenav").style.border='1px solid lightgray';
+    document.getElementById("mySidenav").style.width = "100%";    
+    document.getElementById("menu_open").setAttribute('data-open',1);
+    event.stopPropagation();    
+  }
+
+  function closeNav() {
+    //alert('close nav');
+    document.getElementById('hd_img').src='gfx/jham.png';    
+    //document.getElementById('hd_img').src='gfx/jback.png';    
+    //document.getElementById('menu_open').innerHTML='&#x2630;'; //&#x2630;
+    document.getElementById("mySidenav").style.border='0px';
+    document.getElementById("mySidenav").style.width = "0";   
+    document.getElementById("menu_open").setAttribute('data-open',0); 
+    //showMainPage();  
+    
+    f_MainPage=true;
+    //alert('closeNav: '+f_MainPage);
+    event.stopPropagation();          
+  }
+
+  
+  window.onclick = function(event) {
+    if(event.target.id !== 'mySidenav_box' && f_MainPage) {         
+      closeNav();    
+    }    
+  }
+  
+    
+  var CURR_METERNO=''; 
+  var CURR2_PASS=''; 
+  var CURR2_NAME='';    
+  var CURR2_AXTYPE=0;
+
+  var CURR2_COMMUNITY='';
+  var CURR2_METERS=0;    
+  var CURR2_STATUS=0;    
+  var CURR2_COLLECTION=0;    
+  var CURR2_DATE_DOWN="";    
+  var CURR2_DATE_EXP="";    
+  var CURR2_REPAIRS="";    
+  var CURR2_REPDATE="";    
+  var CURR2_PISSUED="";    
+  
+</script>
+
+</head>
+<body style="color:#252526;background:#E8E8E8;padding:0px;">
+<div id="snackbar"></div> 
+
+<div id="mySidenav" class="sidenav" style="height:100%;margin-top:0px;font-size:9px;">
+  <div id="mySidenav_box" style="height:100%;width:90%;margin-top:0px;font-size:9px;border:1px solid black;padding:20px 0 0 0;background:white;">
+    
+    <a href="javascript:showHomePage()" class="nav_menu">
+      <div style="width:100%;">
+        <img src="gfx/jhome.png" alt="home image"/>
+        <span>Home</span>
+      </div>      
+    </a> 
+    
+    <a href="javascript:fm_meter()" class="nav_menu">
+      <div style="width:100%;">
+        <img src="gfx/jcam.png" alt="fm meter reading image"/>
+        <span>Meter Reading</span>
+      </div>      
+    </a>   
+    
+    <a href="javascript:not_yet()" class="nav_menu">
+      <div style="width:100%;">
+        <img src="gfx/setting.png" alt="fm setting image" />
+        <span>Site Status</span>
+      </div>      
+    </a>  
+    <a href="javascript:not_yet()" class="nav_menu">
+        <div style="width:100%;">
+          <img src="gfx/jsite.png" alt="fm profile image"/>
+          <span>Site Profile</span>
+        </div>      
+      </a>  
+    <a href="javascript:not_yet()" class="nav_menu" style="margin-bottom:10px;">
+      <div style="width:100%;">
+        <img src="gfx/admin.png" alt="fm admin image"/>
+        <span>Admin Area</span>
+      </div>      
+    </a> 
+    
+  </div>      
+</div>
+
+<div id="myJBox" class="modal_box">  
+    
+  <div id="myBox_main" data-open=0 data-close='' data-meter=0 class="bottom_box"> 
+    <div id="hd_box" class="color_head" style="width:100%;height:30px;font-size:15px;border:1px solid black;color:white;">
+      <div id="cap_box" style="float:left;width:90%;height:100%;padding:5px;background:none;">Title Box A</div>
+      <div style="float:right;width:10%;height:100%;background:none;">
+        <input type="button" onclick="closeBox()" style="float:right;width:30px;height:100%;font-size:14px;color:black;" value="X" />
+      </div>  
+    </div>  
+    <div id="dtl_box" style="width:100%;height:80px;bottom:0px;padding:0px;overflow:auto;border:1px solid black;color:black;background:none;">      
+    </div>   
+  </div>
+
+</div>
+
+<div id="myCameraBox" class="modal_box">
+  <div id="myCameraBox_main" data-open=0 data-meter=0 class="bottom_box" style="background:blue;"> 
+    <div id="hd_cam_box" style="width:100%;height:30px;font-size:15px;border:1px solid black;color:white;background:#3b5998;">
+      <div id="cap_cam_box" style="float:left;width:90%;height:100%;padding:4px 0 0 5px;background:none;">Maintenance</div>
+      <div style="float:right;width:10%;height:100%;background:none;">
+        <input type="button" onclick="closeCameraBox()" style="float:right;width:30px;height:100%;font-size:14px;color:black;" value="X" />
+      </div>  
+    </div>  
+    <div id="dtl_cam_box" style="width:100%;height:80px;bottom:0px;padding:5px;overflow:auto;border:1px solid black;color:black;background:none;">
+      <div id="container" style="position:relative;width:100%;height:310px;">
+
+        <div id="div_curr_photo" style="width:100%;height:100px;text-align:center;border:1px solid black;background:darkgray;">
+          <img id="div_curr_img" src="" style="width:auto;max-width:100%;height:100%;background:darkgray;" alt="div curr image"/>          
+        </div>      
+        <div id="div_video" style="display:none;text-align:center;width:100%;height:100%;background:black;">
+          <video id="myVideo" style="width:100%;height:100%;overflow:hidden;border:0px solid black;" playsinline autoplay></video>
+          <div id="jfocus" style="position:absolute;top:5px;left:0;width:200px;height:80px;border:1px dashed red;"></div>
+        </div>
+        <div style="display:none;width:100%;height:300px;text-align:center;padding:0px;overflow:auto;background:cyan;">
+          <canvas id="myCanvas"></canvas>
+        </div>      
+
+        <div id="div_tapal" style="z-index:300;text-align:center;position:absolute;bottom:0;left:0;width:100%;height:0px;background:lightgray;padding:0px;overflow:auto;">        
+    
+          <div style="width:100%;height:50px;padding:5px;background:none;">            
+            <div id="btn_cam_main" data-mode=0 onclick="doCamera()" style="float:left;width:55%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+              <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">
+                <img id="btn_cam_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
+              </div>            
+              <div id="btn_cam_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
+                Take Photo
+              </div>            
+            </div>
+            <div id="btn_cam_cancel" data-mode=0 onclick="doClose()" style="float:right;width:43%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+              <div id="btn_cam_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
+                Close
+              </div>            
+              <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
+                <img id="btn_cam_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
+              </div> 
+            </div>            
+          </div>
+
+          <div id="transcription" style="margin:0 auto;width:100%;height:70px;text-align:center;margin-top:5px;padding:5px;overflow:auto;background:white;">            
+          </div> 
+
+          <div style="margin:0 auto;width:100%;height:85px;margin-top:0px;padding:5px;background:gray;">            
+            <div style="text-align:center;width:100%;height:70%;padding:5px;color:black;background:none;">
+              <label for="meter_read" style="font-size:16px;text-align:center;width:100%;height:30%;padding:0px;color:black;">
+                Meter Reading</label>
+              <input id="meter_read" value="" oninput="showRecordBtn(this.value)" type="number" style="width:100%;height:100%;font-weight:bold;font-size:18px;text-align:center;color:black;background:white;" />
+            </div>
+          </div>           
+
+        </div>
+
+      </div>
+    </div>   
+  </div>
+</div>
+
+
+<!--************************* blocker-->
+<div id="je_msg" tabindex="0" data-rval="SAGBAYAN" class="modal" style="display:none;" onkeydown="javascript:if(event.keyCode==27) closeModal()">
+  <div class="modal-content">
+    <div id="modal-header" class="modal-header" style="background:none;">
+      <!--span class="closeBtn" onclick="closeModal()">&times;</span-->
+      <span id="DivPrompt">
+        <h1>Modal Header</h1>
+      </span>				
+    </div>
+    <div id="modal-body" class="modal-body" style="background:lightgrey;">
+      <div id="msgBody">        
+      </div>	
+      <div style="height:auto;text-align:center;margin-top:5px;background:none;">
+        <div id="msgDivPrompt" style="display:none;margin-bottom:5px;">
+          <input class="je_msg_btn" type="text" id="txtPrompt" onkeydown="javascript:if(event.keyCode==13) MSG_CLICK(1)" style="width:40%;height:20px;border:1px solid black;text-align:center;" value="" />
+        </div>
+        <div id="msgDivOk" style="display:none;">
+          <!--input type="button" onclick="closeModal()" class="button" value="OK" /-->
+          <input type="text" id="txOk" style="display:none;width:100px;"/>
+          <input class="je_msg_btn" type="button" id="btnOk" onclick="MSG_CLICK(1)" onkeydown="javascript:if(event.keyCode==13) MSG_CLICK(1)" value="OK" />
+        </div>
+        <div id="msgDivYesNo" style="display:none;">
+          <input class="je_msg_btn" type="button" id="btnYes" onclick="MSG_CLICK(1)" value="Yes" />
+          <input class="je_msg_btn" type="button" id="btnNo"  onclick="MSG_CLICK(2)" value="No" style="margin-left: 2%;" />
+        </div>
+      </div>				
+    </div>
+    <div id="modal-footer" class="modal-footer" style="color:white;text-align:right;height:auto;">
+      Hatsoftware Dialog Ver 1.01 Copyright (c) 2020
+    </div>
+  </div>	
+</div>  
+
+<div id="loading" class="modal">      
+  <div class="modal-center" style="display:block;width:150px;height:150px;background:none;">      
+    <img src="gfx/proc_logo.gif" style="float:right;height:100%;width:100%;z-index:1500;" />
+  </div>
+</div>
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_main" class="page_class" style="display:none;height:100%;margin-top:0px;padding:0px;background:#3475b9;">   
+  
+  <div class="jheader" id="div_header" style="height:65px;width:100%;font-size:16px;font-weight:bold;background:none;">    
+    <div class="color_head" style="width:100%;height:40px;padding:0px;background:lightblue;"> 
+
+      <div id="menu_open" data-open=0 onclick="openNav()" style="float:left;width:20%;height:100%;padding:2px;font-size:25px;color:red;text-align:center;background:none;">
+        <img id="hd_img" src="gfx/jham.png"  alt="ham menu image" style="width:35px;height:100%;">       
+      </div> 
+      <div id="div_tilt" style="float:left;width:60%;height:100%;background:none;">
+        <div style="height:100%;font-size:22px;font-weight:bold;padding:7px 0 0 0;text-align:center;background:none;">WATERWORKS</div>        
+      </div>
+      <div style="float:right;width:20%;height:100%;padding:2px;text-align:right;background:none;">        
+        <img src="gfx/author.png" alt="client logo image" style="height:100%;background:none;">
+      </div>
+
+    </div> 
+    <div style="display:block;width:100%;height:25px;background:lightblue;">      
+      <div id="logger" style="height:100%;width:100%;padding:4px;text-align:right;font-size:14px;color:navy;background:red;"></div>
+    </div>
+  </div>
+    
+  <div id="user_main" style="position:relative;width:100%;height:100%;margin:0 auto;text-align:center;margin-top:0%;padding:0px;
+      background-image:url('gfx/bg_app.jpg');background-repeat: no-repeat;
+      background-size: 100% 100%;">      
+
+    <div id="img_main" style="width:100%;height:60%;text-align:center;padding:40px 0 0 0;background:none;">        
+      <img src="gfx/eMeter.png" style="height:75%;opacity:0.4;" alt="eMeter image"/>
+    </div>
+    
+    <div id="center_btns" style="width:100%;height:30%;padding:0px; font-family: 'Times New Roman', Times, serif;  font-weight: bold;    
+              color:gray;background:none;">        
+
+      <div id="btn_1" style="width:100%;height:auto;text-align:center;background:none;" >      
+        <input type="button" onclick="fm_meter()" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Read Meter"/>
+      </div>
+
+      <div id="btn_2" style="width:100%;height:auto;text-align:center;margin-top:10px;background:none;" >      
+        <input type="button" onclick="" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Upload"/>
+      </div>
+
+    </div>
+
+    <div style="position:absolute;top:150px;width:100%;height:auto;font-weight:bold;text-align:center;padding:0px;background:none;">        
+      <div id="heeding1" style="font-size:18px;"></div>
+      <div id="heeding2" style="font-size:14px;"></div>
+    </div>
+    
+  </div>
+
+</div>
+
+
+<div id="myView1" data-page=0 data-open=0 data-close="" data-JBEpage=0 class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div>
+  <div class="back_main">      
+    <div id="back_view1" onclick="closeView(1)" class="back_class">
+      <img id="back_view_img1" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>      
+    <div id="cap_myView1" class="cap_class"></div>
+    <div id="cap_viewMid1" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView1" class="myView_dtl">
+  </div>        
+</div>  
+  
+<div id="myView2" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div>
+  <div class="back_main">
+    <div id="back_view2" onclick="closeView(2)" class="back_class">
+      <img id="back_view_img2" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>
+    <div id="cap_myView2" class="cap_class"></div>
+    <div id="cap_viewMid2" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView2" class="myView_dtl">
+    <!--dtl-->
+  </div>       
+</div>
+
+<div id="myView3" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div>    
+  <div class="back_main">
+    <div id="back_view3" onclick="closeView(3)" class="back_class">
+      <img id="back_view_img3" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>
+    <div id="cap_myView3" class="cap_class"></div>
+    <div id="cap_viewMid3" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView3" class="myView_dtl">
+    <!--dtl-->
+  </div>       
+</div>
+
+<div id="myView4" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div> 
+  <div class="back_main">
+    <div id="back_view4" onclick="closeView(4)" class="back_class">
+      <img id="back_view_img4" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>
+    <div id="cap_myView4" class="cap_class"></div>
+    <div id="cap_viewMid4" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView4" class="myView_dtl">
+    <!--dtl-->
+  </div>       
+</div>
+
+<div id="myView5" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div> 
+  <div class="back_main">
+    <div id="back_view5" onclick="closeView(5)" class="back_class">
+      <img id="back_view_img5" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>
+    <div id="cap_myView5" class="cap_class"></div>
+    <div id="cap_viewMid5" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView5" class="myView_dtl">
+    <!--dtl-->
+  </div>       
+</div>
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_meter" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
+    <div id="back_meter" class="back_class">
+      <img id="back_meter_img" src="gfx/jback.png" onclick="closeMeterPage()" style="height:100%;background:none;margin-left:10px;" />
+    </div>
+    <div id="cap_meter" class="cap_class">
+      Meter Reading
+    </div>
+  </div>
+  
+  <div id="page_dtl_meter" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+
+    <div style="width:100%;height:20px;padding:0px;border:0px solid lightgray;color:black;background:white;">    
+      <div id="mtr_date" style="width:100%;height:auto;text-align:right;font-size:12px;font-weight:bold;border:0px solid black;background-color:none;"></div>
+    </div>  
+
+    <div id="meter_client" style="width:100%;height:100px;margin-top:5px;padding:10px;border:1px solid lightgray;color:black;background:white;">    
+      <input type="text" id="inp_meterno" style="float:left;width:70%;height:100%;font-size:20px;text-transform:uppercase;text-align:center;border:1px solid black;background-color:none;" value="" placeholder="Enter Meter No."/>
+      <input type="button" onclick="chk_meter()" style="float:right;width:25%;height:100%;text-align:center;border:0px solid black;background-color:none;" value="GO"/>
+    </div>  
+
+      
+    <div style="width:100%;height:165px;padding:5px;margin-top:5px;border:1px solid lightgray;color:black;background:white;">    
+      <div class="class_mtr0">
+        <span class="class_mtr1">Name: </span>
+        <span id="mtr_name" class="class_mtr2"></span>
+      </div> 
+      <div class="class_mtr0">
+        <span class="class_mtr1">Address: </span>
+        <span id="mtr_address" class="class_mtr2"></span>
+      </div>
+      <div class="class_mtr0">
+        <span class="class_mtr1">Serial Number: </span>
+        <span id="mtr_serialno" class="class_mtr2" style="padding:10px 0 0 0;"></span>
+      </div>
+    </div>  
+    <div style="width:100%;height:165px;padding:5px;margin-top:5px;border:1px solid black;color:black;background:white;">    
+      <div class="class_mtr0" style="margin-top:0px;">
+        <span class="class_mtr1">Previous Reading: </span>
+        <span id="mtr_prev" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
+      </div> 
+      <div class="class_mtr0">
+        <span class="class_mtr1">Current Reading: </span>
+        <span id="mtr_curr" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
+      </div>
+      <div class="class_mtr0">
+        <span class="class_mtr1">Amount Due: </span>
+        <span id="mtr_amount" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
+      </div>
+    </div> 
+  </div>  
+
+</div>
+<div id="page_map" style="display:none;width:100%;height:50%;padding:0px;overflow:auto;border:0px solid black;color:black;background:white;">    
+  <div id="theMap" style="width:100%;height:100%;border:1px solid black;background-color:none;"></div>    
+</div>
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_ocr" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+
+  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
+    <div id="back_meter" class="back_class">
+      <img id="back_meter_img" src="gfx/jback.png" onclick="closeMeterPage()" style="height:100%;background:none;margin-left:10px;" />
+    </div>
+    <div id="cap_meter" class="cap_class">
+      OCR Scanner
+    </div>
+  </div>
+  
+  <div id="page_dtl_ocr" style="width:100%;height:100%;padding:5px;border:1px solid black;color:black;background:white;">        
+
+    <div id="div_scan" style="position:relative;width:100%;height:100%;text-align:center;padding:5px;border:2px solid blue;color:black;background:cyan;">    
+      <img id="div_scan_img" src="gfx/jcam.png" style="width:100%;height:auto;max-height:100%;background:none;" />      
+    </div>
+
+    <div id="div_scan_text" style="display:none;position:absolute;top:25%;left:6%;width:88%;height:auto;padding:1px;font-weight:bold;text-align:center;border:2px solid red;color:red;background:lightgray;">    
+    </div>
+    
+    <div id="div_transcription" contentEditable="true" style="display:none;width:100%;height:100%;padding:5px;overflow:auto;border:2px solid black;color:black;background:white;">    
+      
+    </div>
+    <!--textarea id="div_transcription" name="div_transcription" rows="4" cols="50" placeholder="Scanned Document" 
+              style="resize:none;height:50%;width:100%;font-size:14px;padding:5px;border:2px solid black; color:black;background-color:none;">
+    </textarea-->
+  </div>  
+
+</div>
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_map" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+
+  
+
+</div>
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_chat" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
+    <div id="back_chat" class="back_class">
+      <img id="back_chat_img" src="gfx/jback.png" onclick="closeChat()" style="height:100%;background:none;margin-left:10px;" />
+    </div>
+    <div id="cap_chat" class="cap_class">
+      Technical Support
+    </div>
+  </div>
+  
+  <div id="page_dtl_chat" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+    <div style="width:100%;height:100%;padding:0px;border:1px solid gray;color:black;background:white;">    
+      
+      <div class="color_head" id="div_chat_hd" style="width:100%;margin-top:0px;padding:3px;border:0px solid gray;">      
+        Chat Box
+      </div>
+      
+      <div id="div_chat" class="div_chat" style="width:100%;overflow-y:scroll;overflow-x:hidden;border:0px solid red;background-color:white;">     
+        <div id="div_msg" style="display:block;width:100%;height:100%;padding:0px;">
+          <div id="div_msg_items" style="width:100%;height:100%;overflow-y:scroll;overflow-x:hidden;">
+
+          </div>
+          <div id="msg_zoom" style="display:none;position:relative;text-align:center;width:100%;height:100%;padding:0px;border:0px solid gray;overflow:auto;background-color:black;">
+            <img id="msg_zoom_img" src="" style="height:auto;max-height:100%;width:auto;max-width:100%;"/>
+            <button id="msg_zoom_x" onclick="ZOOM_CLOSE()" style="position:absolute;cursor:pointer;right:10px;top:10px;width:auto;height:30px;padding:5px;border:1px solid gray;border-radius:5px;color:white;background:black;">Close</button>
+          </div>
+        </div>    
+      </div>    
+      
+    </div>    
+  </div>  
+
+</div>
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="page_setting" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
+    <div id="back_setting" onclick="closeSetting();" class="back_class">
+      <img src="gfx/jback.png" style="height:100%;background:none;margin-left:10px;" alt="back setting image"/>
+    </div>
+    <div id="cap_setting" class="cap_class">
+      Status
+    </div>
+  </div>
+  
+  <div id="page_dtl_setting" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+    
+    <div id="status_box" style="width:100%;height:auto;margin-top:10px;border:1px solid gray;" >
+      <div class="color_head" style="width:100%;height:30px;font-size:18px;padding:5px;margin-top:0px;" >Pump Status Setting</div>
+      <div style="width:100%;height:35;margin-top:0px;background:lightgray;">
+        <div style="width:100%;height:92px;font-size:14px;padding:5px;margin-top:0px;background:none;">
+
+          <div class="color_2" style="float:left;width:100%;height:35px;font-size:15px;padding:5px;margin-top:0px;">            
+            <div onclick="clk_stat()" class="cl_btn_box" style="float:left;width:40%;height:100%;padding:3px;background:white;">
+              <input type="checkbox"  id="cb_stat" readonly checked value="" style="float:left;width:auto;background:violet;" />          
+              <span id="lb_stat">Status</span>
+            </div>
+            <div id="tx_operational" style="float:left;margin-left:1%;width:59%;font-weight:bold;font-size:18px;height:100%;padding:3px;color:blue;">
+              OPERATIONAL
+            </div>
+          </div>    
+          
+          <div style="display:block;float:left;width:100%;height:30px;font-size:15px;text-align:center;padding:0px;margin-top:0px;background:none;">
+            <div id="div_dates" style="display:block;float:left;width:100%;height:25px;font-size:15px;text-align:center;padding:0px;margin-top:5px;background:none;">
+              <div style="float:left;width:49.0%;height:100%;border:0px solid red;background:none;">
+                <input id="date_down" type="date" name="jdate" data-date="" data-date-format="DD MMMM YYYY" style="float:right;width:100%;height:100%;" value="" />              
+              </div>
+              <div style="float:right;width:49.0%;height:100%;border:0px solid red;background:none;">
+                <input id="date_exp" type="date" name="jdate" data-date="" data-date-format="DD MMMM YYYY" style="float:right;width:100%;height:100%;" value="" />              
+              </div>
+            </div>    
+          </div>    
+
+          <div style="display:block;float:left;width:100%;height:auto;font-size:15px;text-align:center;padding:0px;margin-top:0px;background:none;">
+            <div style="float:left;width:49.0%;border:0px solid red;background:none;">              
+              <span style="font-size:12px;height:auto;">Date Downed</span>
+            </div>
+            <div style="float:right;width:49.0%;border:0px solid red;background:none;">              
+              <span style="font-size:12px;height:auto;">Exp. Date Repair</span>
+            </div>
+          </div>    
+
+        </div>
+ 
+      </div>
+
+    </div>
+      
+    <div id="maintenance_box" style="width:100%;height:220px;margin-top:15px;border:1px solid gray;background:lightgray;">      
+      <div class="color_head" style="width:100%;height:30px;font-size:15px;text-align:center;padding:5px;">
+        Repair and Maintenance Setting
+      </div>
+      <div style="width:100%;height:190px;font-size:18px;padding:5px;background:none;">
+        <div style="width:100%;height:80%;padding:0px;margin-top:0px;background:none;">
+          <div class="color_2" style="position:relative;width:100%;height:auto;padding:5px;margin-top:0px;">
+            
+            <form style="width:100%;height:100%;background:white;">
+                
+              <div class="multiselect color_head" style="width:100%;height:25px;">
+                <div class="color_2" style="float:left;width:40%;height:100%;text-align:left;padding:4px;">Select Repairs</div>
+                <div class="selectBox"  onclick="showCheckboxes(false)" style="float:right;width:60%;height:100%;background:none;">
+                  <select id="sel_setting" style="width:100%;height:100%;color:black;">
+                    <option>Select Here</option>
+                  </select>
+                  <div class="overSelect"></div>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+
+          <div id="div_repairs" style="width:100%;height:90px;font-size:12px;border:1px solid gray;padding:2px;margin-top:0px;z-index:100;background:white;">
+            <textarea id="tx_repairs" name="tx_repairs" rows="4" cols="50" placeholder="" 
+                      style="float:left;resize:none;height:65%;width:100%;font-size:14px;padding:1%;border:1px solid lightgray;
+                        height:100%;text-align:left;color:black;background-color:none;">
+            </textarea>
+          </div>
+
+          <div id="div_drop" class="color_2" style="display:none;height:130px;width:100%;border:1px solid black;">
+            <div id="checkboxes" class="color_3" style="float:left;height:100%;width:70%;font-size:12px;overflow:auto;background:white;">
+            </div>
+            <div id="OK_div" style="float:right;height:100%;width:30%;padding:5px;background:none;">
+              <input type="button" onclick="save_checkboxes()" style="width:100%;height:30px;" value="OK" />
+              <input type="button" onclick="clear_checkboxes()" style="width:100%;height:30px;margin-top:10px;" value="Clear" />
+              <input type="button" onclick="exit_checkboxes()" style="width:100%;height:30px;margin-top:13px;" value="Close" />
+            </div>
+          </div>
+
+          <div id="div_repdate" class="color_2" style="display:block;height:35px;width:100%;margin-top:15px;padding:5px;">
+            <div style="float:left;width:40%;height:100%;padding:4px;">Repair Date</div>
+            <input id="repdate" type="date" data-date="" data-date-format="DD MMMM YYYY" name="jdate" style="float:right;width:60%;height:100%;" value="" />
+          </div>
+        </div>
+
+      </div>      
+      
+    </div>
+
+    <!--div style="width:100%;height:50px;font-size:18px;padding:5px;margin-top:10px;background:lightgray;">
+      <input id="btnRep1" type="button" onclick="btn_rep(1)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Edit" />
+      <input id="btnRep2" type="button" onclick="btn_rep(2)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Close" />
+    </div-->    
+
+  </div>
+  
+</div>
+
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+
+<div id="page_profile" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
+  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
+    <div id="back_profile" onclick="closeProfile()" class="back_class">
+      <img src="gfx/jback.png" style="height:100%;background:none;margin-left:10px;" alt="back profile image"/>
+    </div>
+    <div id="cap_profile" class="cap_class">
+      Site Profile
+    </div>
+  </div>
+  
+  <div id="page_dtl_profile" style="width:100%;height:450px;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+    
+    <div id="community_box" class="box_class" style="margin-top:10px;" >
+      <div class="color_head" style="width:100%;height:30px;padding:5px;margin-top:0px;" >Community Name</div>
+      <div style="width:100%;height:115px;margin-top:0px;background:none;">
+        <div style="width:100%;height:95px;font-size:14px;padding:5px;margin-top:0px;background:none;">
+
+          <div class="color_2" style="width:100%;height:58px;font-size:14px;text-align:center;              
+                  padding:2px;margin-top:0px;border:1px solid gray;overflow:auto;background:red;">
+              <div id="div_profile_community" class="font_fix_inner" style="font-size:16px; color:white;
+                  text-shadow: 0px 0px 0px black, 0 0px 0px black, 0 0 0px white;">
+              </div>
+          </div>
+
+          <div style="display:block;float:left;width:100%;height:30px;font-size:15px;text-align:center;padding:0px;margin-top:0px;background:none;">
+            <div style="display:block;float:left;width:100%;height:25px;font-size:15px;text-align:center;padding:0px;margin-top:5px;background:none;">
+              <div style="float:left;width:49.0%;height:100%;border:1px solid gray;padding:0px;background:white;">
+                <input type="number" id="div_profile_families" class="data_entry" style="float:right;width:100%;height:100%;text-align:center;" />
+              </div>
+              <div style="float:right;width:49.0%;height:100%;border:1px solid gray;padding:px;background:white;">
+                <input type="number" id="div_profile_hectares" class="data_entry" style="float:right;width:100%;height:100%;text-align:center;" />
+              </div>
+            </div>    
+          </div>    
+
+          <div style="display:block;float:left;width:100%;height:auto;font-size:15px;text-align:center;padding:0px;margin-top:0px;background:none;">
+            <div style="float:left;width:49.0%;border:0px solid red;background:none;">              
+              <span style="font-size:12px;font-weight:bold;height:auto;"># of Families</span>
+            </div>
+            <div style="float:right;width:49.0%;border:0px solid red;background:none;">              
+              <span style="font-size:12px;font-weight:bold;height:auto;"># of Hectares</span>
+            </div>
+          </div>    
+
+        </div>
+  
+      </div>
+
+    </div>
+
+    <div id="officers_box" class="box_class" style="margin-top:10px;height:auto;font-size:13px;border:0px solid black;" >
+      <div class="xxcolor_head" style="width:100%;height:auto;text-align:center;padding:2px;margin-top:0px;" >List of Officers</div>
+      <div style="width:100%;height:auto;border:1px solid black;background:none;">
+
+        <div class="color_head" style="width:100%;height:20px;text-align:left;color:black;text-align:center;color:white;">
+          <div class="ofc_box" style="width:28%;">Position</div>
+          <div class="ofc_box" style="width:36%;">Name</div>
+          <div class="ofc_box" style="width:36%;">Contact#</div>
+        </div>
+
+        <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+          <div class="ofc_box" style="width:28%;height:100%;">Chairperson</div>
+          <div class="ofc_box" style="width:36%;height:100%;"><input type="text" id="ofc_chair" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+          <div class="ofc_box" style="width:36%;height:100%;"><input type="text" id="ofc_chair_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+        </div>
+        <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+          <div class="ofc_box" style="width:28%;">Vice-Chair</div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_vice" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_vice_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+        </div>
+        <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+          <div class="ofc_box" style="width:28%;">Secretary</div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_sec" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_sec_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+        </div>
+        <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+          <div class="ofc_box" style="width:28%;">Treasurer</div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_treas" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_treas_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+        </div>
+        <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+          <div class="ofc_box" style="width:28%;">Auditor</div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_audi" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+          <div class="ofc_box" style="width:36%;"><input type="text" id="ofc_audi_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+        </div>
+
+      </div>
+  
+    </div>
+    
+    <div id="tech_box" class="box_class" style="margin-top:10px;height:auto;font-size:13px;border:0px solid black;" >
+      <div class="xxcolor_head" style="width:100%;height:auto;text-align:center;padding:2px;margin-top:0px;" >Technician</div>
+      <div style="width:100%;height:auto;border:1px solid black;background:none;">
+
+          <div class="color_head" style="width:100%;height:20px;text-align:left;color:black;text-align:center;color:white;">
+            <div class="ofc_box" style="width:50%;">Name</div>
+            <div class="ofc_box" style="width:50%;">Contact#</div>
+          </div>
+
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech1_name" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech1_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech2_name" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech2_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech3_name" class="data_entry" style="width:100%;height:100%;" value="" /></div>
+            <div class="ofc_box" style="width:50%;"><input type="text" id="tech3_tel" class="data_entry" style="width:100%;height:100%;"  value="" /></div>
+          </div>
+
+      </div>
+  
+    </div>
+      
+    <div class="box_class" style="margin-top:15px;font-size:13px;border:0px solid black;">      
+
+      <div style="width:100%;height:auto;text-align:center;padding:2px;margin-top:0px;" >Beneficiaries</div>
+      <div style="width:100%;height:auto;padding:0px;border:1px solid black;background:none;">
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;">Male</div>
+            <div class="ofc_box" style="width:50%;"><input type="number" id="bene_male" onclick="tot_bene()" class="data_entry" style="width:100%;" value="" /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;">Female</div>
+            <div class="ofc_box" style="width:50%;"><input type="number" id="bene_female" onclick="tot_bene()" class="data_entry" style="width:100%;" value="" /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;">Children</div>
+            <div class="ofc_box" style="width:50%;"><input type="number" id="bene_children" onclick="tot_bene()" class="data_entry" style="width:100%;" value="" /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;">Total</div>
+            <div class="ofc_box" style="width:50%;"><input type="number" id="bene_total" class="data_entry" style="width:100%;" value="" readonly /></div>
+          </div>
+          <div style="width:100%;height:22px;text-align:left;color:black;background:white;">
+            <div class="ofc_box" style="width:50%;">Expected Output</div>
+            <div class="ofc_box" style="width:50%;"><input type="number" id="exp_output" onclick="tot_bene()" class="data_entry" style="width:100%;" value="" /></div>
+          </div>
+        
+      </div>      
+      
+    </div>
+
+    
+
+  </div>
+</div>
+<!-- *************************PAGES***************************************************
+******************************************************************************** -->
+<div id="div_footer" class="footer" style="height:50px;padding:4px;color:white;">
+  
+  <div id="mnu_main" class="menu_class" style="display:none;width:100%;height:100%;">    
+    <div id="copyright" style="width:100%;height:100%;text-align:center;padding:7px 0 0 0;margin-top:4px;background:none;">HAT Software &copy; Copyright 2021. Bacolod City.</div>        
+  </div>
+
+  <div id="mnu_camera" class="menu_class" style="display:none;width:100%;height:100%;">  
+
+    <a href="javascript:lastReading()" style="float:left;margin-left:0%;width:30%;height:100%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jedit.png"  style="height:100%;" alt="back image" />          
+      </div>        
+      <div class="footer_fonts">Last Reading</div>      
+    </a>  
+    <a id="dm_save" href="javascript:saveData(0)" style="display:none;float:left;margin-left:8%;width:25%;height:100%;background: none;">
+      <div style="width:100%;height:100%;background: none;">
+        <div class="footer_gfxs">
+          <img src="gfx/jsave.png"  style="height:100%;" alt="save image" />          
+        </div>        
+        <div class="footer_fonts">Save</div>
+      </div>
+    </a>   
+	  <a id="dm_send" href="javascript:sendData(1)" style="display:none;float:right;width:20%;height:100%;background:none;">
+      <div style="width:100%;height:100%;background: none;">
+        <div class="footer_gfxs">
+          <img src="gfx/jsend.png"  style="height:100%;" alt="save image" />          
+        </div>        
+        <div class="footer_fonts">Send</div>
+      </div>
+    </a>  
+    
+  </div>
+
+  <div id="mnu_lastread" class="menu_class" style="display:none;width:100%;height:100%;">  
+
+    <a href="javascript:closeBox()" style="float:left;width:25%;height:100%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jcancel.png"  style="height:100%;" alt="save image" />          
+      </div>        
+      <div class="footer_fonts">Close</div>    
+    </a> 
+		<a id="send_last_read" href="javascript:sendSaveData()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jsend.png"  style="height:100%;" alt="send image" />          
+      </div>        
+      <div class="footer_fonts">Send</div>    
+    </a> 		    
+    
+  </div>
+
+  <div id="mnu_meter" class="menu_class" style="display:none;width:100%;height:100%;">  
+
+    <a href="javascript:get_meter()" style="float:left;width:25%;height:100%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jcam.png"  style="height:100%;" alt="save image" />          
+      </div>        
+      <div class="footer_fonts">Read</div>    
+    </a> 
+		<a id="send_last_read" href="javascript:PrintElem()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jedit.png"  style="height:100%;" alt="send image" />          
+      </div>        
+      <div class="footer_fonts">Print</div>    
+    </a> 		    
+    
+  </div>
+
+  <div id="mnu_get_meter" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;background:none;">  
+    <span id="lb_rec" style="margin-top:10px;">Meter Reader version 1.01</span>
+    <a id="lb_record" href="javascript:saveEntries()" style="display:none;width:40%;height:100%;margin-left:30%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jupvideo.png"  style="height:100%;" alt="save image" />          
+      </div>        
+      <div class="footer_fonts">Record</div>    
+    </a>  
+    <!--input id="lb_record" type="image" src="gfx/jrecord.png" onclick="saveEntries()" style="height:100%;background: none;" /-->             
+  </div>
+  
+  <div id="mnu_scanner" class="menu_class" style="display:none;width:100%;height:100%;">  
+    <div style="width:100%;height:100%;padding:5px;background:none;">            
+      <div id="btn_cam_main" data-mode=0 onclick="doScanner()" style="float:left;width:55%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">
+          <img id="btn_cam_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
+        </div>            
+        <div id="btn_cam_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;font-size:20px;padding:2px 0 0 0;color:black;background:none;">
+          Take Photo
+        </div>            
+      </div>
+      <div id="btn_cam_cancel" data-mode=0 onclick="doCloseScanner()" style="float:right;width:43%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div id="btn_cam_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;font-size:20px;padding:2px 0 0 0;color:black;background:none;">
+          Close
+        </div>            
+        <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
+          <img id="btn_cam_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
+        </div> 
+      </div>            
+    </div>
+    
+  </div>
+
+  <div id="mnu_ocr" class="menu_class" style="display:none;width:100%;height:100%;">  
+
+    <div style="width:100%;height:100%;padding:5px;background:none;">  
+    
+      <!--div id="btn_scan_main" data-mode=0 onclick="JBE_GET_IMAGE(20,id_file_front.id,div_scan_img.id,'',true)" style="float:left;width:55%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;"-->
+      <div id="btn_scan_main" data-mode=0 onclick="do_scan()" style="float:left;width:55%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">
+          <input type="file" id="id_file_front" data-orig="" name="id_file_front" hidden="hidden" />
+          <img id="btn_scan_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
+        </div>            
+        <div id="btn_scan_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;font-size:20px;padding:2px 0 0 0;color:black;background:none;">
+          Take Photo
+        </div>            
+      </div>     
+
+      <div id="btn_scan_cancel" data-mode=0 onclick="doCloseOCR()" style="float:right;width:43%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div id="btn_scan_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;font-size:20px;padding:2px 0 0 0;color:black;background:none;">
+          Close
+        </div>            
+        <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
+          <img id="btn_scan_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
+        </div> 
+      </div>   
+
+    </div>
+    
+  </div>
+
+  <div id="mnu_ocr_scanned" class="menu_class" style="display:none;width:100%;height:100%;">  
+
+    <div style="width:100%;height:100%;padding:5px;font-size:12px;background:none;">  
+    
+      <!--div id="btn_scan_main" data-mode=0 onclick="JBE_GET_IMAGE(20,id_file_front.id,div_scan_img.id,'',true)" style="float:left;width:55%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;"-->
+      <div id="btn_scanned_main" data-mode=0 onclick="do_scan()" style="float:left;width:33%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">          
+          <img id="btn_scanned_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
+        </div>            
+        <div id="btn_scanned_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;padding:2px 0 0 0;color:black;background:none;">
+          Image
+        </div>            
+      </div>     
+
+      <div id="btn_scanned_result" data-mode=0 onclick="save_scanned()" style="float:left;width:33%;height:100%;cursor:pointer;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">          
+          <img id="btn2_scanned_img" src="gfx/jsave.png" style="height:100%;" alt="btn cam image"/>
+        </div>            
+        <div id="btn2_scanned_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;padding:2px 0 0 0;color:black;background:none;">
+          Save
+        </div>            
+      </div>     
+
+      <div id="btn_scanned_cancel" data-mode=0 onclick="doCloseScanner()" style="float:right;width:33%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+        <div id="btn_scan_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;padding:2px 0 0 0;color:black;background:none;">
+          Close
+        </div>            
+        <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
+          <img id="btn_scanned_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
+        </div> 
+      </div>   
+
+    </div>
+    
+  </div>
+
+  <div id="mnu_map" class="menu_class" style="display:none;width:100%;height:100%;background:red;">  
+
+    <div onclick="refreshMain()" style="float:left;width:20%;height:100%;background: none;">      
+      <div class="class_footer">
+        <img src="gfx/jhome.png" alt="home image" />
+        <span>Home</span>
+      </div>      
+    </div> 
+
+    <div onclick="openLandmark()" style="float:left;width:15%;height:100%;">
+      <div class="class_footer">
+        <img src="gfx/landmark.png" alt="openLandmark image" />
+        <span>Spots</span>
+      </div> 
+    </div>
+    
+    <div id="mnu_user" style="float:left;width:38%;height:100%;font-size:12px;text-align:center;padding:5px;border:1px solid white;background: none;">
+      <div style="float:left;width:100%;height:50%;color:black;font-weight:bold;background:none;">
+        <span id="logger">Please Log In</span>
+      </div>
+      <div id="jtime" style="float:left;width:100%;height:50%;margin-top:2px;color:white;background:none;">          
+      </div>
+    </div>
+    <div onclick="main_login()" style="float:right;width:10%;height:100%;">
+      <div class="class_footer">
+        <img id="log_avatar" src="gfx/avatar.png" onerror="this.onerror=null;this.src='gfx/jcancel.png';" style="height:100%;border-radius:50%;border:1px solid white;" alt="admin image" />
+        <span>Me</span>
+      </div> 
+    </div>
+    
+  </div>
+    
+
+  <div id="mnu_zoom_play" class="menu_class" style="display:none;width:100%;height:100%;">  
+        
+    <a href="javascript:closeZoomPlay()" style="float:left;width:auto;height:100%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jcancel.png"  style="height:100%;" alt="save image" />          
+      </div>        
+      <div class="footer_fonts">Close Video</div>    
+    </a>
+    
+  </div>
+  
+  <div id="mnu_profile" class="menu_class" style="display:none;width:100%;height:100%;background:none;">  
+        
+    <div style="width:100%;height:100%;font-size:18px;padding:3px;">
+      <input id="btnProf1" type="button" onclick="btn_prof(1)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Edit" />
+      <input id="btnProf2" type="button" onclick="btn_prof(2)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Close" />
+    </div>    
+    
+  </div>
+  
+  <div id="mnu_setting" class="menu_class" style="display:none;width:100%;height:100%;background:none;">  
+        
+    <div style="width:100%;height:100%;font-size:18px;padding:3px;">
+      <input id="btnRep1" type="button" onclick="btn_rep(1)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Edit" />
+      <input id="btnRep2" type="button" onclick="btn_rep(2)" class="color_head cl_btn_box" style="width:49%;height:100%;margin-top:0px;text-align:center;" value="Close" />  
+    </div>    
+    
+  </div>
+
+  <div id="mnu_chat" class="menu_class" style="display:none;width:100%;height:100%;">      
+    
+    <div id="fm_msg" style="display:block;width:100%;height:100%;text-align:center;background:none;">              
+      <div style="width:100%;height:100%;background:none;">
+        <span style="float:left;width:15%;height:100%;background-color:none;">
+          <input type="image" onclick="refreshMESSAGES()" src="gfx/ref.png" style="height:100%;background-color:none;"/>
+        </span>
+        <input type="file" id="up_img" name="up_img" hidden="hidden" />
+        <div id="custom-img" style="float:left;cursor:pointer;height:100%;width:16%;border:1px solid lightgray;background:white;">
+          <img id="pre_img" name="pre_img" data-img="" onclick="JBE_PICK_IMAGE(up_img.id,pre_img.id)" src="gfx/jimage.png" style="height:100%;" />
+        </div>        
+        <input id="txtMsg" type="text" name="txtMsg" placeholder="Type your message..." 
+          style="float:left;height:100%;width:51%;margin-left:1%;font-size:14px;padding:1%;border:1px solid lightgray;
+            text-align:left;color:black;background-color:none;"/>
+            
+        <button  class="head_color cl_btn_box" onclick="sendMsg()" style="float:right;height:100%;width:16%;background:none;">Send</button>      
+      </div>                        
+    </div>  
+    
+  </div>
+  
+</div>
+
+
+<script src="js/coke.js" type="text/javascript"></script>
+<script src="js/je_msg.js" type="text/javascript"></script>
+<script src="js/axios.min.js" type="text/javascript"></script>
+
+<!--script src='https://unpkg.com/tesseract.js@v2.0.0-alpha.10/dist/tesseract.min.js'></script-->
+<!--script src="js/tesseract.min.js" type="text/javascript"></script-->
+
+<script type='text/javascript' src='js/enadlib.js'></script>
+
+<script type='text/javascript' src='app_ocr.js'></script>
+<script type='text/javascript' src='app_meter.js'></script>
+<script type='text/javascript' src="app_meter2.js"></script>
+<script type='text/javascript' src='app_admin.js'></script>
+<script type='text/javascript' src='app_video.js'></script>
+<script type='text/javascript' src='app_setting.js'></script>
+<script type='text/javascript' src='app_profile.js'></script>
+<script type='text/javascript' src='app_chat.js'></script>
+
+<link rel="stylesheet" type="text/css" href="js/leaflet.css" />
+<!--link rel="stylesheet" href="js/MarkerCluster.css" />
+<link rel="stylesheet" href="js/MarkerCluster.Default.css" /-->
+
+<script type='text/javascript' src='js/leaflet.js'></script>
+<script src="js/leaflet.markercluster-src.js"></script>
+<script type='text/javascript' src='app_map.js'></script>
+
+<script type='text/javascript' src='app_pages.js'></script>
+
+<script type='text/javascript' src='app_main.js'></script>
+<script type='text/javascript' src='app_db.js'></script>
+
+<script> 
+
+  
+ //alert('start app');
+
+  CURR_METERNO=readCookie('cookie_proj'); 
+  //alert('from cookie: '+CURR_METERNO);
+    
+  CURR2_COMMUNITY=readCookie('cok_community');    
+  CURR2_METERS=parseInt(readCookie('cok_meters'));
+  CURR2_STATUS=parseInt(readCookie('cok_status'));      
+  CURR2_DATE_DOWN=readCookie('cok_downed');    
+  CURR2_DATE_EXP=readCookie('cok_exp_date');    
+  CURR2_REPAIRS=readCookie('cok_repairs');    
+  
+  CURR2_REPDATE=readCookie('cok_repdate');  
+  JBE_HOST=parseInt(readCookie('cok_host'));     
+  if(isNaN(JBE_HOST) || JBE_HOST==null ){ JBE_HOST=0; }
+  var d = new Date();  
+  var n = d.toLocaleTimeString();   
+  
+  myResizeFunction();
+  je_msg_color('white',JBE2_CLOR);
+  EP_SetMainColors('color_head',JBE2_CLOR);
+  EP_SetMainColors('color_head2',JBE2_CLOR);
+  EP_SetMainColors('color_head3',JBE2_CLOR3);
+  EP_SetMainColors('color_head4',JBE2_CLOR4);
+  EP_SetMainColors('color_2',JBE2_CLOR2);
+  EP_SetMainColors('page_class',JBE2_CLOR4);
+  document.getElementById('logger').style.backgroundColor='white';
+  document.getElementById('div_header').style.backgroundColor=JBE2_CLOR;
+  document.getElementById('div_footer').style.backgroundColor=JBE2_CLOR;
+  //document.getElementById('divTilt2').innerHTML='AIDFI Monitoring System ver. '+JBE2_VER;
+  
+  //var orig_host = window.location.href.search(/aidfimonitoring/i);
+  var sysDate = new Date();
+  var sysTime = new Date().toLocaleTimeString('it-IT');
+  sysDate = new Date(sysDate.getTime() - (sysDate.getTimezoneOffset() * 60000 ))
+                   .toISOString()
+                   .split("T")[0];
+
+  document.getElementById('heeding1').innerHTML=CURR_CLIENTNAME.toLocaleUpperCase();
+  document.getElementById('heeding2').innerHTML=CURR_CLIENTADDRESS;
+
+  init_app();
+  get_app_db();   
+  showMainPage();
+  // === end main prog ===
+    
+  function showOffline(){
+    JBE_ONLINE=false;
+    //alert('offline');    
+    init_app();
+    //document.getElementById('logger').innerHTML='OFFLINE';
+  }
+
+  function init_app(){
+    //if(CURR_METERNO=='NONE' || CURR_METERNO=='' || CURR_METERNO==null) {       
+    document.getElementById('logger').style.color='navy';
+    if(!CURR_METERNO) {       
+      document.getElementById('logger').innerHTML="Please Log In";
+    }else{
+      document.getElementById('logger').innerHTML='Date: '+sysDate+'  Time: '+sysTime;
+      //document.getElementById('div_comm').innerHTML=CURR2_COMMUNITY;        
+    }      
+    if(!JBE_ONLINE){
+      document.getElementById('logger').innerHTML='Network Offline';
+      document.getElementById('logger').style.color='red';
+    }
+    
+  }
+
+  
+  
+  function callText(m){    
+    //ignore_onbeforeunload=true;
+    if(m=='call') {
+      //alert('call');
+      window.location.href="tel:+63-948-952-3337";
+    }else if(m=='txt') {
+      window.location.href="sms://+639489523337?body=I%27m%20interested%20in%20your%20product.%20Please%20contact%20me."
+      //alert('text');
+    }
+  }
+   
+  //JBE2_USER=enadfy(JBE2_USER);
+  
+  function showUnreadMsg(){
+    return;
+      //display unread msg======================    
+      var msgnum=0;
+      for(var i=0;i<DB_CHAT.length;i++){     
+        if(DB_CHAT[i]['unread']==0 && DB_CHAT[i]['SENDER']==0){
+          msgnum++;
+        }
+      }
+
+      document.getElementById('div_notif_num').innerHTML=msgnum;
+      document.getElementById('div_notif').style.display='none';
+      if(msgnum > 0){
+        document.getElementById('div_notif').style.display='block';
+      }        
+  }
+ 
+
+  //=============================================================
+  
+  function jeff(){  
+    alert(
+      'JEFF ENAD found: '+              
+      '\nDB_PROJ: '+DB_PROJ.length+      
+      '\nDB_CHAT: '+DB_CHAT.length+
+      '\nDB_VIDS: '+DB_VIDS.length      
+    );
+  }
+
+  function showProgress(v){
+    var vd='block';
+    if(!v){ vd='none'; }
+    document.getElementById("loading").style.display=vd;
+  }
+  
+ 
+  function EP_SetMainColors(clr,clr2){
+    document.querySelectorAll('.'+clr).forEach(function(el) {
+      el.style.backgroundColor=clr2;
+    });
+  }
+      
+</script>
+
+</body>
+</html>
