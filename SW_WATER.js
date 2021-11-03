@@ -1,48 +1,37 @@
-const cacheName = 'RPUMP-16001';
+const cacheName = 'WATER-1011';
 const staticAssets = [
   './',
   './index.html',
   
   './app_styles.css',  
   
-  './js/axios.min.js','./js/coke.js','./js/je_msg.js',
+  './js/axios.min.js','./js/coke.js','./js/je_msg.js','./js/enadlib.js',
 
   './app_admin.js','./app_chat.js','./app_db.js','./app_main.js','./app_meter.js',
   './app_meter2.js','./app_pages.js','./app_profile.js','./app_setting.js','./app_video.js',
 
   './gfx/apple-touch-iphone.png', 
-  './gfx/calendar_2.png', './gfx/jimage.png', './gfx/ref.png', 
+  './gfx/jimage.png', './gfx/ref.png', 
   './gfx/proc.gif',  
 
   './gfx/author.png',  './gfx/logo.png',  
-
-  './gfx/centerLogo.png',
+  
   './gfx/img_empty.png',  
   './gfx/jadmin.png',  
   './gfx/jback.png',  
   './gfx/jcam.png',
-  
-  './gfx/jdown.png',
+    
   './gfx/jedit.png',
   './gfx/jham.png',  
   './gfx/jhome.png',
   
   './gfx/jmsg.png', 
-  './gfx/jnotif.png',
-  './gfx/jrefresh.png',
   './gfx/jsave.png',
   './gfx/jsend.png',
 
-  './gfx/jsetting.png',  
   './gfx/jsite.png',  
-  './gfx/jvideo.png',
-  './gfx/logo_aidfi.png',  
 
   './gfx/eMeter.png',  
-  './gfx/eSupport.png',  
-  './gfx/eStatus.png',
-  './gfx/eProfile.png',  
-  './gfx/wave.png',  
   
   './manifest.webmanifest'
 ];
