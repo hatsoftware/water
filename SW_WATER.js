@@ -1,4 +1,4 @@
-const cacheName = 'WATER-1011';
+const cacheName = 'WATER-1021';
 const staticAssets = [
   './',
   './index.html',
