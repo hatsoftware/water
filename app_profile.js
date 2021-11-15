@@ -18,7 +18,7 @@ function closeProfile(){
   showMainPage();
 }
 
-function clearStore(jstore){   
+function xxxclearStore(jstore){   
   //alert(jstore);
   //let request = indexedDB.open('app_db', dbVersion);
   var request = indexedDB.open('DB_'+CURR_CLIENT, dbVersion);

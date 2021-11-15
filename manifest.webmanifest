@@ -8,15 +8,15 @@
   "orientation": "portrait",
   "background_color": "#d3e1f0",
   "theme_color": "#2196F3",
-  "description": "An app for Water Readomg",
+  "description": "An app for Water Reading",
   "icons": [
     {
-      "src": "gfx/author.png",
+      "src": "gfx/icon-152x152.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "gfx/logo.png",
+      "src": "gfx/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     }

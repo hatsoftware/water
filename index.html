@@ -42,6 +42,7 @@
   }else if(window.location.origin.substring(0,16) == 'http://localhost') { 
     JBE_API=window.location.origin+'/water_api/';
   }
+  //alert(JBE_API);
   //window.navigator.vibrate() && window.navigator.vibrate(100);
 </script> 
 <!-- ****************************************************************** -->
@@ -170,6 +171,7 @@
   //var JBE2_CLOR='#9900CC';
   //var JBE2_CLOR='#3b5998'; 
   var JBE2_CLOR='#3475b9'; 
+  var JBE_CLOR='#3475b9'; 
   //var JBE2_CLOR='#1f93fa';
   //var JBE2_CLOR='#1a1e4d';
   var JBE2_CLOR2='#99ccff'; 
@@ -192,9 +194,11 @@
   var DB_CODEX=[];  
   var DB_VIDS=[];  
   var DB_CHAT=[];
-  var DB_USER=[];
-  var DB_METER=[];
-  var DB_CONSUMER=[];
+  
+  var DB_UPLOAD=[];
+  var DB_METER=[];    var iDB_METER=[];
+  var DB_CONSUMER=[]; var iDB_CONSUMER=[];
+  var DB_USER=[];     var iDB_USER=[]; 
 
   var V_DESCRP='';
   var V_UPLOADS='';
@@ -250,7 +254,7 @@
     f_MainPage=true;
     
     //if(CURR_METERNO=='NONE' || CURR_METERNO==null || CURR_METERNO==''){
-    if(!CURR_METERNO){
+    if(!CURR_USER){
       showLogin();
       return;
     }
@@ -296,11 +300,13 @@
     }    
   }
   
-    
+
   var CURR_METERNO=''; 
-  var CURR2_PASS=''; 
-  var CURR2_NAME='';    
-  var CURR2_AXTYPE=0;
+
+  var CURR_USER='';  
+  var CURR_USERID=''; 
+  var CURR_USERNAME='';    
+  var CURR_AXTYPE=0;
 
   var CURR2_COMMUNITY='';
   var CURR2_METERS=0;    
@@ -321,43 +327,40 @@
 <div id="mySidenav" class="sidenav" style="height:100%;margin-top:0px;font-size:9px;">
   <div id="mySidenav_box" style="height:100%;width:90%;margin-top:0px;font-size:9px;border:1px solid black;padding:20px 0 0 0;background:white;">
     
-    <a href="javascript:showHomePage()" class="nav_menu">
+    <a href="javascript:fm_admin()" class="nav_menu" style="margin-bottom:0px;">
       <div style="width:100%;">
-        <img src="gfx/jhome.png" alt="home image"/>
-        <span>Home</span>
+        <img src="gfx/jadmin.png" alt="fm admin image"/>
+        <span>Admin Area</span>
       </div>      
     </a> 
-    
+
     <a href="javascript:fm_meter()" class="nav_menu">
       <div style="width:100%;">
-        <img src="gfx/jcam.png" alt="fm meter reading image"/>
+        <img src="gfx/icon-192x192.png" alt="fm meter reading image"/>
         <span>Meter Reading</span>
       </div>      
     </a>   
     
-    <a href="javascript:not_yet()" class="nav_menu">
+    <a href="javascript:fm_download_data()" class="nav_menu">
       <div style="width:100%;">
-        <img src="gfx/setting.png" alt="fm setting image" />
-        <span>Site Status</span>
-      </div>      
-    </a>  
-    <a href="javascript:not_yet()" class="nav_menu">
-        <div style="width:100%;">
-          <img src="gfx/jsite.png" alt="fm profile image"/>
-          <span>Site Profile</span>
-        </div>      
-      </a>  
-    <a href="javascript:not_yet()" class="nav_menu" style="margin-bottom:10px;">
-      <div style="width:100%;">
-        <img src="gfx/admin.png" alt="fm admin image"/>
-        <span>Admin Area</span>
+        <img src="gfx/jdownload.png" alt="download image" />
+        <span>Download Data</span>
       </div>      
     </a> 
-    
+    <hr> 
+    <a href="javascript:logout()" class="nav_menu">
+      <div style="width:100%;">
+        <img src="gfx/jclose.png" alt="download image" />
+        <span>Log Out</span>
+      </div>      
+    </a>
+        
   </div>      
 </div>
 
-<div id="myJBox" class="modal_box">  
+<div id="myJBox" class="modal_box" style="bottom:0px;"></div>
+
+<div id="myBox" class="modal_box">  
     
   <div id="myBox_main" data-open=0 data-close='' data-meter=0 class="bottom_box"> 
     <div id="hd_box" class="color_head" style="width:100%;height:30px;font-size:15px;border:1px solid black;color:white;">
@@ -373,59 +376,56 @@
 </div>
 
 <div id="myCameraBox" class="modal_box">
-  <div id="myCameraBox_main" data-open=0 data-meter=0 class="bottom_box" style="background:blue;"> 
+  <div id="myCameraBox_main" data-open=0 data-meter=0 class="bottom_box" style="height:500px;border:0px solid pink;background:darkslategray;"> 
     <div id="hd_cam_box" style="width:100%;height:30px;font-size:15px;border:1px solid black;color:white;background:#3b5998;">
       <div id="cap_cam_box" style="float:left;width:90%;height:100%;padding:4px 0 0 5px;background:none;">Maintenance</div>
       <div style="float:right;width:10%;height:100%;background:none;">
         <input type="button" onclick="closeCameraBox()" style="float:right;width:30px;height:100%;font-size:14px;color:black;" value="X" />
       </div>  
     </div>  
-    <div id="dtl_cam_box" style="width:100%;height:80px;bottom:0px;padding:5px;overflow:auto;border:1px solid black;color:black;background:none;">
-      <div id="container" style="position:relative;width:100%;height:310px;">
+    <div id="dtl_cam_box" style="width:100%;height:100%;padding:5px;border:0px solid yellow;color:black;background:none;">
+      <div id="container" style="position:relative;width:100%;height:100%;border:0px solid cyan;">
 
-        <div id="div_curr_photo" style="width:100%;height:100px;text-align:center;border:1px solid black;background:darkgray;">
-          <img id="div_curr_img" src="" style="width:auto;max-width:100%;height:100%;background:darkgray;" alt="div curr image"/>          
+        <div id="div_curr_photo" style="width:100%;height:100%;text-align:center;border:1px solid black;overflow:auto;background:darkgray;">
+          <img id="div_curr_img" src="gfx/eMeter.png" style="width:auto;max-width:100%;height:100%;background:darkgray;" alt="div curr image"/>          
         </div>      
-        <div id="div_video" style="display:none;text-align:center;width:100%;height:100%;background:black;">
+        <div id="div_video" style="display:none;text-align:center;width:100%;height:100%;border:0px solid violet;background:black;">
           <video id="myVideo" style="width:100%;height:100%;overflow:hidden;border:0px solid black;" playsinline autoplay></video>
-          <div id="jfocus" style="position:absolute;top:5px;left:0;width:200px;height:80px;border:1px dashed red;"></div>
+          <div id="jfocus" style="position:absolute;top:5px;left:0;width:300px;height:300px;border:1px dashed red;"></div>
         </div>
-        <div style="display:none;width:100%;height:300px;text-align:center;padding:0px;overflow:auto;background:cyan;">
+        <div style="display:none;width:100%;height:100%;text-align:center;padding:0px;border:1px solid brown;overflow:auto;background:green;">
           <canvas id="myCanvas"></canvas>
-        </div>      
+        </div> 
 
-        <div id="div_tapal" style="z-index:300;text-align:center;position:absolute;bottom:0;left:0;width:100%;height:0px;background:lightgray;padding:0px;overflow:auto;">        
-    
-          <div style="width:100%;height:50px;padding:5px;background:none;">            
-            <div id="btn_cam_main" data-mode=0 onclick="doCamera()" style="float:left;width:55%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
-              <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">
-                <img id="btn_cam_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
-              </div>            
-              <div id="btn_cam_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
-                Take Photo
-              </div>            
-            </div>
-            <div id="btn_cam_cancel" data-mode=0 onclick="doClose()" style="float:right;width:43%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
-              <div id="btn_cam_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
-                Close
-              </div>            
-              <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
-                <img id="btn_cam_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
-              </div> 
+      </div>       
+
+      <div id="div_tapal" style="width:100%;height:135px;text-align:center;border:0px solid red;background:green;padding:0px;">        
+  
+        <div style="width:100%;height:50px;padding:5px;background:none;">            
+          <div id="btn_cam_main" data-mode=0 onclick="doCamera()" style="float:left;width:55%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+            <div style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;color:black;background:none;">
+              <img id="btn_cam_img" src="gfx/jcam.png" style="height:100%;" alt="btn cam image"/>
+            </div>            
+            <div id="btn_cam_txt" style="float:left;text-align:left;margin-left:10px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
+              Take Photo
             </div>            
           </div>
+          <div id="btn_cam_cancel" data-mode=0 onclick="doClose()" style="float:right;width:43%;height:100%;border-radius:10px;padding:2px;background:#8b9dc3;">
+            <div id="btn_cam_txt2" style="float:left;text-align:left;margin-left:15px;width:auto;height:100%;font-size:18px;padding:8px 0 0 0;color:black;background:none;">
+              Close
+            </div>            
+            <div style="float:right;text-align:left;margin-right:10px;width:auto;height:100%;color:black;background:none;">
+              <img id="btn_cam_img2" src="gfx/jcancel.png" style="height:100%;" alt="btn2 cam image"/>
+            </div> 
+          </div>            
+        </div>
 
-          <div id="transcription" style="margin:0 auto;width:100%;height:70px;text-align:center;margin-top:5px;padding:5px;overflow:auto;background:white;">            
-          </div> 
-
-          <div style="margin:0 auto;width:100%;height:85px;margin-top:0px;padding:5px;background:gray;">            
-            <div style="text-align:center;width:100%;height:70%;padding:5px;color:black;background:none;">
-              <label for="meter_read" style="font-size:16px;text-align:center;width:100%;height:30%;padding:0px;color:black;">
-                Meter Reading</label>
-              <input id="meter_read" value="" oninput="showRecordBtn(this.value)" type="number" style="width:100%;height:100%;font-weight:bold;font-size:18px;text-align:center;color:black;background:white;" />
-            </div>
-          </div>           
-
+        <div style="margin:0 auto;width:100%;height:85px;margin-top:0px;padding:5px;background:gray;">            
+          <div style="text-align:center;width:100%;height:70%;padding:5px;color:black;background:none;">
+            <label for="meter_read" style="font-size:16px;text-align:center;width:100%;height:30%;padding:0px;color:black;">
+              Meter Reading</label>
+            <input id="meter_read" value="" oninput="showRecordBtn(this.value)" type="number" style="width:100%;height:100%;font-weight:bold;font-size:18px;text-align:center;color:black;background:white;" />
+          </div>
         </div>
 
       </div>
@@ -487,7 +487,7 @@
         <div style="height:100%;font-size:22px;font-weight:bold;padding:7px 0 0 0;text-align:center;background:none;">WATERWORKS</div>        
       </div>
       <div style="float:right;width:20%;height:100%;padding:2px;text-align:right;background:none;">        
-        <img src="gfx/author.png" alt="client logo image" style="height:100%;background:none;">
+        <img src="gfx/author.png" onclick="jeff()" alt="client logo image" style="height:100%;background:none;">
       </div>
 
     </div> 
@@ -500,8 +500,8 @@
       background-image:url('gfx/bg_app.jpg');background-repeat: no-repeat;
       background-size: 100% 100%;">      
 
-    <div id="img_main" style="width:100%;height:60%;text-align:center;padding:40px 0 0 0;background:none;">        
-      <img src="gfx/eMeter.png" style="height:75%;opacity:0.4;" alt="eMeter image"/>
+    <div id="img_main" style="width:100%;height:50%;text-align:center;padding:20px 0 0 0;background:none;">        
+      <img src="gfx/eMeter.png" style="height:90%;opacity:0.4;" alt="eMeter image"/>
     </div>
     
     <div id="center_btns" style="width:100%;height:30%;padding:0px; font-family: 'Times New Roman', Times, serif;  font-weight: bold;    
@@ -512,25 +512,50 @@
       </div>
 
       <div id="btn_2" style="width:100%;height:auto;text-align:center;margin-top:10px;background:none;" >      
-        <input type="button" onclick="" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Upload"/>
+        <input type="button" onclick="fm_upload()" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Upload"/>
       </div>
 
     </div>
 
-    <div style="position:absolute;top:150px;width:100%;height:auto;font-weight:bold;text-align:center;padding:10px;background:none;">        
+    <div style="position:absolute;top:100px;width:100%;height:auto;font-weight:bold;text-align:center;padding:10px;background:none;
+          font-weight:bold;text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">        
       <div id="heeding1" style="font-size:22px;"></div>
       <div id="heeding2" style="font-size:14px;"></div>
     </div>
+
+    <div style="position:relative;width:100%;height:20%;padding:20px;background:none;">
+      <div style="width:100%;height:70px;border-radius:20px;text-align:center;color:black;background:white;opacity:0.4;">
+      </div>
+      <div style="position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;color:black;padding:8% 0 0 0;background:none;">        
+        <div id="theReader" style="font-size:22px;font-weight:bold;color:navy;text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">Juan dela Cruz</div>      
+        <div style="width:60%;height:2px;margin-left:20%;margin-right:20%;background:black;"></div>
+        <div style="font-size:18px;">Reader</div>
+      </div>
+    </div>    
     
   </div>
 
 </div>
 
 
-<div id="myView1" data-page=0 data-open=0 data-close="" data-JBEpage=0 class="page_class myView" style="display:none;">
+<!--div id="myView1" data-page=0 data-open=0 data-close="" data-JBEpage=0 class="page_class myView" style="display:none;">
   <div style="width:100%;height:0px;"></div>
   <div class="back_main">      
     <div id="back_view1" onclick="closeView(1)" class="back_class">
+      <img id="back_view_img1" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>      
+    <div id="cap_myView1" class="cap_class"></div>
+    <div id="cap_viewMid1" class="cap_mid_class"></div>
+  </div>
+  <div id="dtl_myView1" class="myView_dtl">
+  </div>        
+</div-->  
+
+<div id="myView1" data-page=0 data-open=0 data-close="" data-JBEpage=0 class="page_class myView" style="display:none;">
+  <div style="width:100%;height:0px;"></div>
+  <div class="back_main">      
+    <div id="back_view1" onclick="JBE_CLOSE_VIEW(1)" class="back_class">
       <img id="back_view_img1" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>      
@@ -544,7 +569,7 @@
 <div id="myView2" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
   <div style="width:100%;height:0px;"></div>
   <div class="back_main">
-    <div id="back_view2" onclick="closeView(2)" class="back_class">
+    <div id="back_view2" onclick="JBE_CLOSE_VIEW(2)" class="back_class">
       <img id="back_view_img2" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>
@@ -559,7 +584,7 @@
 <div id="myView3" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
   <div style="width:100%;height:0px;"></div>    
   <div class="back_main">
-    <div id="back_view3" onclick="closeView(3)" class="back_class">
+    <div id="back_view3" onclick="JBE_CLOSE_VIEW(3)" class="back_class">
       <img id="back_view_img3" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>
@@ -574,7 +599,7 @@
 <div id="myView4" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
   <div style="width:100%;height:0px;"></div> 
   <div class="back_main">
-    <div id="back_view4" onclick="closeView(4)" class="back_class">
+    <div id="back_view4" onclick="JBE_CLOSE_VIEW(4)" class="back_class">
       <img id="back_view_img4" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>
@@ -589,7 +614,7 @@
 <div id="myView5" data-page=0 data-open=0 data-close="" class="page_class myView" style="display:none;">
   <div style="width:100%;height:0px;"></div> 
   <div class="back_main">
-    <div id="back_view5" onclick="closeView(5)" class="back_class">
+    <div id="back_view5" onclick="JBE_CLOSE_VIEW(5)" class="back_class">
       <img id="back_view_img5" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>
@@ -602,30 +627,31 @@
 </div>
 <!-- *************************PAGES***************************************************
 ******************************************************************************** -->
-<div id="page_meter" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
-  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
-    <div id="back_meter" class="back_class">
-      <img id="back_meter_img" src="gfx/jback.png" onclick="closeMeterPage()" style="height:100%;background:none;margin-left:10px;" />
+<div id="page_meter" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:0px;">   
+  
+  <div style="width:100%;height:0px;"></div> 
+  <div class="back_main">
+    <div id="back_meter" onclick="showMainPage()" class="back_class">
+      <img id="back_view_meter" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
     </div>
-    <div id="cap_meter" class="cap_class">
-      Meter Reading
-    </div>
+    <div id="cap_meter" class="cap_class">Meter Reading</div>
+    <div id="cap_mid_meter" class="cap_mid_class"></div>
   </div>
   
-  <div id="page_dtl_meter" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+  <div id="page_dtl_meter" class="myView_dtl" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
 
     <div style="width:100%;height:20px;padding:0px;border:0px solid lightgray;color:black;background:white;">    
       <div id="mtr_date" style="width:100%;height:auto;text-align:right;font-size:12px;font-weight:bold;border:0px solid black;background-color:none;"></div>
     </div>  
 
-    <div id="meter_client" style="width:100%;height:100px;margin-top:5px;padding:10px;border:1px solid lightgray;color:black;background:white;">    
+    <div id="meter_client" style="width:100%;height:70px;margin-top:5px;padding:10px;border:1px solid lightgray;color:black;background:white;">    
       <input type="text" id="inp_meterno" style="float:left;width:70%;height:100%;font-size:20px;text-transform:uppercase;text-align:center;border:1px solid black;background-color:none;" value="" placeholder="Enter Meter No."/>
-      <input type="button" onclick="chk_meter()" style="float:right;width:25%;height:100%;text-align:center;border:0px solid black;background-color:none;" value="GO"/>
-    </div>  
-
+      <input type="button" id="btn_meterno" onclick="chk_meter()" class="color_head" style="float:right;width:25%;height:100%;text-align:center;border:0px solid black;" value="GO"/>
+    </div>
       
-    <div style="width:100%;height:165px;padding:5px;margin-top:5px;border:1px solid lightgray;color:black;background:white;">    
-      <div class="class_mtr0">
+    <div style="width:100%;height:auto;padding:5px;margin-top:5px;border:1px solid lightgray;color:black;background:white;">    
+      <div class="class_mtr0" style="margin-top:0px;">
         <span class="class_mtr1">Name: </span>
         <span id="mtr_name" class="class_mtr2"></span>
       </div> 
@@ -637,67 +663,64 @@
         <span class="class_mtr1">Serial Number: </span>
         <span id="mtr_serialno" class="class_mtr2" style="padding:10px 0 0 0;"></span>
       </div>
-    </div>  
-    <div style="width:100%;height:165px;padding:5px;margin-top:5px;border:1px solid black;color:black;background:white;">    
-      <div class="class_mtr0" style="margin-top:0px;">
-        <span class="class_mtr1">Previous Reading: </span>
-        <span id="mtr_prev" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
+    </div>
+
+    <div style="width:100%;height:auto;padding:5px;margin-top:15px;border:1px solid black;color:black;background:white;">    
+      <div style="margin-top:0px;width:100%;height:35px;border:1px solid gray;padding:2px;">
+        <span style="float:left;padding:5px;">Previous Reading : </span>
+        <span id="mtr_prev" style="float:right;text-align:right;padding:5px;font-weight:bold;"></span>
       </div> 
-      <div class="class_mtr0">
-        <span class="class_mtr1">Current Reading: </span>
-        <span id="mtr_curr" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
+
+      <div style="margin-top:5px;width:100%;height:35px;border:1px solid gray;padding:2px;">
+        <span style="float:left;padding:5px;">Current Reading : </span>
+        <span id="mtr_curr" style="float:right;text-align:right;padding:5px;font-weight:bold;"></span>
+      </div> 
+      <div style="margin-top:0px;width:100%;height:150px;overflow:auto;text-align:center;border:1px solid gray;padding:2px;">
+        <img id="mtr_pic" style="height:100%;width:auto;">
       </div>
-      <div class="class_mtr0">
-        <span class="class_mtr1">Amount Due: </span>
-        <span id="mtr_amount" class="class_mtr2" style="text-align:right;padding:10px 10px 0 0;"></span>
-      </div>
-    </div> 
+
+      <div style="margin-top:5px;width:100%;height:35px;border:1px solid gray;padding:2px;">
+        <span style="float:left;padding:5px;">Amount Due : </span>
+        <span id="mtr_amount" style="float:right;text-align:right;padding:5px;font-weight:bold;"></span>
+      </div>      
+    </div>
+
   </div>  
 
 </div>
+
+<div id="printableArea" style="display:none;width:500px;border:1px solid black;background:red;">
+  <div id="prnHead1" style="text-align:center;"></div>
+  <div id="prnHead2" style="text-align:center;"></div>
+  <div id="prnHead3" style="text-align:center;"></div>
+  <div style="margin-top:10px;text-align:center;">W A T E R   B I L L</div>
+
+  <div style="margin-top:10px;width:200px;">Date <span id="prnDate"></span></div>
+  <div style="width:200px;">Name : <span id='prnName'></span></div>
+  <div style="width:200px;">Address : <span id='prnAddress'></span></div>
+  <div style="width:200px;">Serial No. : <span id='prnSerialno'></span></div>
+</div>
+
 <div id="page_map" style="display:none;width:100%;height:50%;padding:0px;overflow:auto;border:0px solid black;color:black;background:white;">    
   <div id="theMap" style="width:100%;height:100%;border:1px solid black;background-color:none;"></div>    
 </div>
 
 <!-- *************************PAGES***************************************************
 ******************************************************************************** -->
-<div id="page_ocr" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
-
-  <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
-    <div id="back_meter" class="back_class">
-      <img id="back_meter_img" src="gfx/jback.png" onclick="closeMeterPage()" style="height:100%;background:none;margin-left:10px;" />
+<div id="page_upload" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:0px;">
+  <div style="width:100%;height:0px;"></div> 
+  <div class="back_main">
+    <div id="back_meter" onclick="showMainPage()" class="back_class">
+      <img id="back_view_meter" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
     </div>
-    <div id="cap_meter" class="cap_class">
-      OCR Scanner
-    </div>
+    <div id="cap_meter" class="cap_class">Batch Upload</div>
+    <div id="cap_mid_meter" class="cap_mid_class"></div>
   </div>
   
-  <div id="page_dtl_ocr" style="width:100%;height:100%;padding:5px;border:1px solid black;color:black;background:white;">        
-
-    <div id="div_scan" style="position:relative;width:100%;height:100%;text-align:center;padding:5px;border:2px solid blue;color:black;background:cyan;">    
-      <img id="div_scan_img" src="gfx/jcam.png" style="width:100%;height:auto;max-height:100%;background:none;" />      
-    </div>
-
-    <div id="div_scan_text" style="display:none;position:absolute;top:25%;left:6%;width:88%;height:auto;padding:1px;font-weight:bold;text-align:center;border:2px solid red;color:red;background:lightgray;">    
-    </div>
-    
-    <div id="div_transcription" contentEditable="true" style="display:none;width:100%;height:100%;padding:5px;overflow:auto;border:2px solid black;color:black;background:white;">    
-      
-    </div>
-    <!--textarea id="div_transcription" name="div_transcription" rows="4" cols="50" placeholder="Scanned Document" 
-              style="resize:none;height:50%;width:100%;font-size:14px;padding:5px;border:2px solid black; color:black;background-color:none;">
-    </textarea-->
+  <div id="page_dtl_upload" class="myView_dtl" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
   </div>  
-
-</div>
-
-<!-- *************************PAGES***************************************************
-******************************************************************************** -->
-<div id="page_map" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
-
-  
-
-</div>
+</div>  
 
 <!-- *************************PAGES***************************************************
 ******************************************************************************** -->
@@ -1058,31 +1081,37 @@
   </div>
 
   <div id="mnu_meter" class="menu_class" style="display:none;width:100%;height:100%;">  
+    <div style="margin-top:13px;text-align:center;">Meter Reader version 1.01</div>
+  </div>
 
+  <div id="mnu_get_meter" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;background:none;">  
     <a href="javascript:get_meter()" style="float:left;width:25%;height:100%;background: none;">      
       <div class="footer_gfxs">
         <img src="gfx/jcam.png"  style="height:100%;" alt="save image" />          
       </div>        
       <div class="footer_fonts">Read</div>    
     </a> 
-		<a id="send_last_read" href="javascript:PrintElem()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
+		<a href="javascript:do_print()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
       <div class="footer_gfxs">
         <img src="gfx/jedit.png"  style="height:100%;" alt="send image" />          
       </div>        
-      <div class="footer_fonts">Print</div>    
-    </a> 		    
-    
+      <div class="footer_fonts">Print</div>
+    </a> 		  
+    <a href="javascript:init_meter()" style="float:right;width:25%;height:100%;margin-left:0%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jcancel.png"  style="height:100%;" alt="send image" />          
+      </div>        
+      <div class="footer_fonts">Close</div>
+    </a>   
   </div>
 
-  <div id="mnu_get_meter" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;background:none;">  
-    <span id="lb_rec" style="margin-top:10px;">Meter Reader version 1.01</span>
-    <a id="lb_record" href="javascript:saveEntries()" style="display:none;width:40%;height:100%;margin-left:30%;background: none;">      
+  <div id="mnu_save_meter" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;background:none;">      
+    <a href="javascript:saveEntries()" id="lb_record" style="width:40%;height:100%;margin-left:30%;background: none;">      
       <div class="footer_gfxs">
-        <img src="gfx/jupvideo.png"  style="height:100%;" alt="save image" />          
+        <img src="gfx/jdown.png"  style="height:100%;" alt="save image" />          
       </div>        
       <div class="footer_fonts">Record</div>    
-    </a>  
-    <!--input id="lb_record" type="image" src="gfx/jrecord.png" onclick="saveEntries()" style="height:100%;background: none;" /-->             
+    </a>          
   </div>
   
   <div id="mnu_scanner" class="menu_class" style="display:none;width:100%;height:100%;">  
@@ -1266,14 +1295,11 @@
 
 <script type='text/javascript' src='js/enadlib.js'></script>
 
-<script type='text/javascript' src='app_ocr.js'></script>
 <script type='text/javascript' src='app_meter.js'></script>
 <script type='text/javascript' src="app_meter2.js"></script>
+<script type='text/javascript' src="app_upload.js"></script>
 <script type='text/javascript' src='app_admin.js'></script>
-<script type='text/javascript' src='app_video.js'></script>
 <script type='text/javascript' src='app_setting.js'></script>
-<script type='text/javascript' src='app_profile.js'></script>
-<script type='text/javascript' src='app_chat.js'></script>
 
 <link rel="stylesheet" type="text/css" href="js/leaflet.css" />
 <!--link rel="stylesheet" href="js/MarkerCluster.css" />
@@ -1289,34 +1315,31 @@
 <script type='text/javascript' src='app_db.js'></script>
 
 <script> 
-
   
  //alert('start app');
-
-  CURR_METERNO=readCookie('cookie_proj'); 
-  //alert('from cookie: '+CURR_METERNO);
     
-  CURR2_COMMUNITY=readCookie('cok_community');    
-  CURR2_METERS=parseInt(readCookie('cok_meters'));
-  CURR2_STATUS=parseInt(readCookie('cok_status'));      
-  CURR2_DATE_DOWN=readCookie('cok_downed');    
-  CURR2_DATE_EXP=readCookie('cok_exp_date');    
-  CURR2_REPAIRS=readCookie('cok_repairs');    
+  CURR_USERID=readCookie(CURR_CLIENT+'_userid');    
+  CURR_USER=readCookie(CURR_CLIENT+'_pword');
+  CURR_USERNAME=readCookie(CURR_CLIENT+'_username');      
+  CURR_AXTYPE=readCookie(CURR_CLIENT+'_axtype');   
   
-  CURR2_REPDATE=readCookie('cok_repdate');  
-  JBE_HOST=parseInt(readCookie('cok_host'));     
-  if(isNaN(JBE_HOST) || JBE_HOST==null ){ JBE_HOST=0; }
   var d = new Date();  
   var n = d.toLocaleTimeString();   
   
   myResizeFunction();
+  
+    
   je_msg_color('white',JBE2_CLOR);
-  EP_SetMainColors('color_head',JBE2_CLOR);
-  EP_SetMainColors('color_head2',JBE2_CLOR);
-  EP_SetMainColors('color_head3',JBE2_CLOR3);
-  EP_SetMainColors('color_head4',JBE2_CLOR4);
-  EP_SetMainColors('color_2',JBE2_CLOR2);
-  EP_SetMainColors('page_class',JBE2_CLOR4);
+  
+  JBE_SET_COLOR_BY_CLASS('color_head','',JBE2_CLOR);
+  JBE_SET_COLOR_BY_CLASS('color_head2','',JBE2_CLOR);
+  JBE_SET_COLOR_BY_CLASS('color_head3','',JBE2_CLOR3);
+  JBE_SET_COLOR_BY_CLASS('color_head4','',JBE2_CLOR4);
+  JBE_SET_COLOR_BY_CLASS('color_2','',JBE2_CLOR2);
+  JBE_SET_COLOR_BY_CLASS('page_class','',JBE2_CLOR4);
+
+  JBE_SET_COLOR_BY_CLASS('back_main','blue',JBE2_CLOR);
+  
   document.getElementById('logger').style.backgroundColor='white';
   document.getElementById('div_header').style.backgroundColor=JBE2_CLOR;
   document.getElementById('div_footer').style.backgroundColor=JBE2_CLOR;
@@ -1332,35 +1355,9 @@
   document.getElementById('heeding1').innerHTML=CURR_CLIENTNAME.toLocaleUpperCase();
   document.getElementById('heeding2').innerHTML=CURR_CLIENTADDRESS;
 
-  //init_app();
-  //get_app_db();   
-  showMainPage();
   // === end main prog ===
     
-  function showOffline(){
-    JBE_ONLINE=false;
-    //alert('offline');    
-    init_app();
-    //document.getElementById('logger').innerHTML='OFFLINE';
-  }
-
-  function init_app(){
-    //if(CURR_METERNO=='NONE' || CURR_METERNO=='' || CURR_METERNO==null) {       
-    document.getElementById('logger').style.color='navy';
-    if(!CURR_METERNO) {       
-      document.getElementById('logger').innerHTML="Please Log In";
-    }else{
-      document.getElementById('logger').innerHTML='Date: '+sysDate+'  Time: '+sysTime;
-      //document.getElementById('div_comm').innerHTML=CURR2_COMMUNITY;        
-    }      
-    if(!JBE_ONLINE){
-      document.getElementById('logger').innerHTML='Network Offline';
-      document.getElementById('logger').style.color='red';
-    }
-    
-  }
-
-  
+  start_app();
   
   function callText(m){    
     //ignore_onbeforeunload=true;
@@ -1396,11 +1393,13 @@
   //=============================================================
   
   function jeff(){  
-    alert(
-      'JEFF ENAD found: '+              
-      '\nDB_PROJ: '+DB_PROJ.length+      
-      '\nDB_CHAT: '+DB_CHAT.length+
-      '\nDB_VIDS: '+DB_VIDS.length      
+    alert(           
+      '\nDB_CONSUMER: '+DB_CONSUMER.length+      
+      '\nDB_METER: '+DB_METER.length+
+      '\nDB_USER: '+DB_USER.length+
+      '\n\niDB_CONSUMER: '+iDB_CONSUMER.length+      
+      '\niDB_METER: '+iDB_METER.length+
+      '\niDB_USER: '+iDB_USER.length
     );
   }
 

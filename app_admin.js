@@ -18,7 +18,7 @@ function fm_admin(){
   window.history.pushState({ noBackExitsApp: true }, '');
   f_MainPage=false;
   get_admin_db();
-  openPage('myView1');
+  //openPage('myView1');
   CURR2_PAGE=1;  
   var dtl=
     '<div id="admin_box" style="width:100%;height:auto;font-size:14px;text-align:center;padding:5px;">'+  
@@ -68,7 +68,7 @@ function fm_admin(){
 
     
 
-  openView(1,dtl,'closeAdmin');
+  JBE_OPEN_VIEW(dtl,'cap','closeAdmin');
   document.getElementById('cap_myView1').innerHTML='ADMIN AREA';
   document.getElementById('admin_box').style.display='block';
   document.getElementById('txUser').value='';

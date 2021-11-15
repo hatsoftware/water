@@ -1,5 +1,50 @@
+function start_app(){  
+  JBE_MOBILE=true;  
+  if(window.outerWidth > 500){
+    JBE_MOBILE=false;    
+    document.getElementById('div_header').style.display='none';
+    document.getElementById('div_footer').style.display='none';    
+    //document.getElementById('bar_avatar').src='./gfx/icon-192x192.png';    
+    document.getElementById('page_main').innerHTML='This App runs in mobile platform only.';    
+    return;    
+  }  
+
+  getAllDataFromIDX();
+  init_app();  
+  showMainPage(); 
+  // Page is loaded
+  const objects = document.getElementsByClassName('asyncImage');
+  Array.from(objects).map((item) => {
+    // Start loading image
+    const img = new Image();
+    img.src = item.dataset.src;
+    // Once image is loaded replace the src of the HTML element
+    img.onload = () => {
+      item.classList.remove('asyncImage');
+      return item.nodeName === 'IMG' ? 
+        item.src = item.dataset.src :        
+        item.style.backgroundImage = `url(${item.dataset.src})`;
+    };
+  }); 
+}
+
+function init_app(){
+  //if(CURR_METERNO=='NONE' || CURR_METERNO=='' || CURR_METERNO==null) {       
+  document.getElementById('logger').style.color='navy';
+  //alert(CURR_USERNAME);
+  if(!CURR_USER) {       
+    document.getElementById('logger').innerHTML="Please Log In";
+    document.getElementById('theReader').innerHTML='-';
+  }else{
+    document.getElementById('logger').innerHTML='Date: '+sysDate+'  Time: '+sysTime;
+    //if(CURR_USERNAME==undefined){ CURR_USERNAME='x'; }
+    //alert('CURR_USERNAME '+CURR_USERNAME);
+    document.getElementById('theReader').innerHTML=CURR_USERNAME;
+  }
+}
+
 function get_app_db(){
-  if(!CURR_METERNO){ return; }
+  //if(!CURR_METERNO){ return; }
   DB_CONSUMER=[]; DB_METER=[];
   axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
   .then(function (response) { console.log(response.data);        
@@ -9,29 +54,77 @@ function get_app_db(){
 
     JBE_ONLINE=true;
     document.getElementById('logger').style.color='navy';
-    document.getElementById('logger').innerHTML='Date: '+sysDate+'  Time: '+sysTime;
-    
-    //showUnreadMsg();
-    /*
-    CURR2_COMMUNITY=JBE_GETFLD('community',DB_PROJ,'PROJCODE',CURR_METERNO);  
-    CURR2_METERS=parseInt(JBE_GETFLD('ctr_meter',DB_PROJ,'PROJCODE',CURR_METERNO));  
-    CURR2_STATUS=parseInt(JBE_GETFLD('stat',DB_PROJ,'PROJCODE',CURR_METERNO));  
-    CURR2_COLLECTION=parseFloat(JBE_GETFLD('collection',DB_PROJ,'PROJCODE',CURR_METERNO));
-    CURR2_DATE_DOWN=JBE_GETFLD('date_down',DB_PROJ,'PROJCODE',CURR_METERNO);  
-    CURR2_DATE_EXP=JBE_GETFLD('date_exp',DB_PROJ,'PROJCODE',CURR_METERNO);  
-    CURR2_REPAIRS=JBE_GETFLD('repair',DB_PROJ,'PROJCODE',CURR_METERNO);     
-    saveProfile_IDB();      
-    */
+    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
+
+    console.log('DB HERE...');
   })    
   .catch(function (error) { 
     JBE_ONLINE=false;
     console.log(error); 
     showOffline();
-    getProfile_IDB();
+    //getProfile_IDB();
   });
 }
 
-function myResizeFunction(){       
+
+
+function myResizeFunction(){    
+  //var H_BAR=parseInt(document.getElementById('div_bar').style.height);  
+  var H_BAR=30;
+  
+  H_HEADER=parseInt(document.getElementById('div_header').style.height);  
+  H_FOOTER=parseInt(document.getElementById('div_footer').style.height);
+  
+  H_WRAPPER=window.innerHeight;
+  H_BODY=window.innerHeight - (H_FOOTER);
+  H_PAGE=window.innerHeight - (H_FOOTER);
+  H_VIEW=window.innerHeight - (H_FOOTER);
+  H_VIEW_DTL=window.innerHeight - (H_FOOTER+H_BAR+0);
+ 
+  //document.getElementById('wrapper').style.height=(window.innerHeight)+'px';
+  
+  document.querySelectorAll('.page_class').forEach(function(el) {    
+    el.style.height=H_BODY+'px';    
+    //el.style.backgroundColor='blue';
+  });
+
+  document.querySelectorAll('.myView').forEach(function(el) {
+    el.style.height=H_VIEW+'px';
+    //el.style.width=(px_right+scrollWidth)+'px';
+    el.style.width='100%';
+    //el.style.backgroundColor='red';
+    //el.style.border='2px solid green';
+  });
+   
+  document.querySelectorAll('.myView_dtl').forEach(function(el) {    
+    el.style.height=H_VIEW_DTL+'px';    
+    //el.style.border='1px solid yellow';
+    el.style.width='100%';
+  });
+  
+  document.getElementById('user_main').style.height=window.innerHeight - (H_FOOTER+H_HEADER)+'px';  
+
+  document.getElementById('mySidenav').style.marginTop=(H_HEADER-25)+'px';
+  //document.getElementById('mySidenav').style.height=H_WRAPPER+50+'px';
+  document.getElementById('mySidenav').style.height=(H_BODY+10)+'px';
+
+  document.getElementById('page_meter').style.height=H_BODY+'px';
+  document.getElementById('page_dtl_meter').style.height=(H_BODY-40)+'px';
+
+  //alert('user main height: '+document.getElementById('user_main').style.height);
+  //document.getElementById('mySidenav').style.height=(window.innerHeight-H_HEADER)+'px';
+  //document.getElementById('mySidenav').style.top=H_HEADER+'px';
+
+  if(window.outerWidth > 500){
+    JBE_MOBILE=false;
+  }else{
+    JBE_MOBILE=true;
+  }  
+  document.getElementById('div_header').style.display='block';
+  document.getElementById('div_footer').style.display='block';
+}
+
+function xxmyResizeFunction(){       
   var screen_width=window.outerWidth;
   var H_HEADER=parseInt(document.getElementById('div_header').style.height);  
   var H_FOOTER=parseInt(document.getElementById('div_footer').style.height);
@@ -123,88 +216,8 @@ function loadDoc(div,fle) {
   xhttp.send();
 }
 
-function snackBar(s) {
-  if(s==''){ return; }
-  var x = document.getElementById("snackbar");    
-  x.innerHTML=s;
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-}
-/*
-function jformatNumber(num) {
-  num=Number(num);  
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-function jformatNumber2(xnum) {
-  num=Number(xnum);
-  return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-*/
-function jformatNumber(xnum) {
-  var num=Math.round(xnum,0);
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-function jformatNumber2(xnum) {
-  var num=Math.round(xnum,2);
-  return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
 
-function jeffNumber(mode,div) {  
-  var vv = document.getElementById(div).value;
-  var v = vv.replace(/,/g, '');
-  //var res = str.replace(/,/g, ".");
-  
-  if(mode==1) {
-    v=parseInt(v);
-    var rval = jformatNumber(v);
-  } else if(mode==2) {
-    v=parseFloat(v);
-    rval=jformatNumber2(v);
-  }
-  
-  document.getElementById(div).value=rval;
-  return;
-}
 
-function isNumberKey(evt,div){    
-  var charCode = (evt.which) ? evt.which : event.keyCode
-  //var inputValue = $("#"+div).val();
-  var inputValue = document.getElementById(div).value;
-  if (charCode == 46){        
-      var count = (inputValue.match(/'.'/g) || []).length;
-      if(count<1){
-        if (inputValue.indexOf('.') < 1){
-          if (inputValue.charAt(0) == '.') return false;
-            return true;
-        }
-        return false;
-      }else{
-        return false;
-      }
-  }
-  
-  if (charCode == 45) {      
-    var xcount = (inputValue.match(/'-'/g) || []).length;      
-    if(xcount<1){        
-      if (inputValue.indexOf('-') < 1){                      
-        if (inputValue.charAt(0) == '-') return false;
-        //if (getCursorPosition(inputValue) != 0) return false;
-        return true;
-      }
-    }else{
-      //alert(888);
-      return false;
-    }
-    
-    //if (currentValue.charAt(0) == '-') return false;
-    //if (getCursorPosition(this) != 0) return false;
-  } 
-
-  if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
-      return false;
-  }
-  return true;
-}  
 
 function jnumber(n){  
   return n.replace(/,/g, '');  
@@ -213,48 +226,6 @@ function jnumber(n){
 function nopath(p){
   var retval=p.substr(p.lastIndexOf('/')+1);
   return retval;
-}
-
-function jonline(level){        
-  return;
-  if(level==1){
-    JBE_ONLINE=navigator.onLine;    
-    return JBE_ONLINE;
-  }
-  var d = new Date();
-  var n = d.getTime();
-  //var url = "https://updeskapp1.000webhostapp.com/";
-  var url = "https://aidfimonitoring.com/";
-  var newImg = new Image;
-  newImg.src = url+'gfx/logo.png'+'?'+n;
-  //newImg.src = url+'gfx/admin.png'+'?'+n;
-  console.log("Checking " + url);
-  
-  //JBE_ONLINE=false;
-  newImg.onload = function(){
-      console.log(this.width);
-      if (newImg.height == 300) {
-          //alert("YES Online!");    
-          JBE_ONLINE=true;
-          /*
-          if(navigator.onLine) {
-            JBE_ONLINE=true;
-            console.log("perfect true...");
-            return true;
-          }else{
-            JBE_ONLINE=false;
-            console.log("sorry not perfect...");
-            return false;
-          }
-          */
-          return JBE_ONLINE;
-      } else {
-          //alert("NOT ONLINE");
-          JBE_ONLINE=false;            
-          return JBE_ONLINE;
-      }
-  }
-  //return false;
 }
 
 function je_msg_color(fg,bg){
@@ -294,50 +265,6 @@ function closeBox(){
   if (typeof fn === "function") fn();
 }
 
-function xxxopenView(m,dtl) { 
-  if(m==1){
-    document.getElementById('div_header').style.display='none';
-    //document.getElementById('div_body').style.display='none';  
-  }else{
-    for(var i=1;i<=m;i++){        
-      document.getElementById('myView'+i).style.display='none'; 
-    }    
-  }
-  document.getElementById("myView"+m).style.display='block';
-  var jpad=20;
-  document.getElementById("dtl_myView"+m).style.height = H_BODY-(30+jpad)+'px';    
-  document.getElementById("myView"+m).style.height =H_BODY+'px'; 
-  document.getElementById("dtl_myView"+m).innerHTML=dtl;  
-}
-function xxxcloseView(m){
-  var xclose=document.getElementById("myBox_main").getAttribute('data-close');
-  document.getElementById("myView"+m).setAttribute('data-open','0');
-  document.getElementById("myView"+m).style.display='none';
-  // find object
-  var fn = window[xclose];
-  // is object a function?
-  if (typeof fn === "function") fn();
-}
-
-function openView(m,dtl,xclose) {  
-  var jpad=20;
-  document.getElementById("myView"+m).setAttribute('data-close',xclose);
-  document.getElementById("dtl_myView"+m).style.height = H_BODY-(30+jpad)+'px';    
-  document.getElementById("myView"+m).style.height =H_BODY+'px'; 
-  document.getElementById("dtl_myView"+m).innerHTML=dtl;  
-  openPage('myView'+m);
-}
-
-function closeView(m){
-  var xclose=document.getElementById("myView"+m).getAttribute('data-close');
-  document.getElementById("myView"+m).setAttribute('data-open','0');
-  document.getElementById("myView"+m).style.display='none';
-  // find object
-  var fn = window[xclose];
-  // is object a function?
-  if (typeof fn === "function") fn();
-}
-
 function isValidDate(dateString) {
   var regEx = /^\d{4}-\d{2}-\d{2}$/;
   if(!dateString.match(regEx)) return false;  // Invalid format
@@ -351,36 +278,6 @@ function not_yet(){
   MSG_SHOW(vbOk,"FYI: ","This routine is still under construction.",function(){},function(){});
 }
 
-function JBE_PICK_IMAGE(inp_file,targ_div,cb){
-  //alert('i:'+inp_file+'\nt:'+targ_div);  
-  //var closeDiv=document.getElementById('main_JBE_zoom').getAttribute('data-close');
-  thisFile=null;
-  var real_ImgBtn = document.getElementById(inp_file);
-  real_ImgBtn.setAttribute("accept","image/*"); //accept="image/*"    
-
-  real_ImgBtn.addEventListener("change", function() {
-    if (real_ImgBtn.value) {
-      var reader = new FileReader();
-      var imgSize=event.target.files[0].size;
-      reader.onload = function(){
-        if(imgSize > 6000000){
-          MSG_SHOW(vbOk,"ERROR: ","File is too big. Maximum is 6mb.",function(){},function(){});
-          return;
-        }
-        var output = document.getElementById(targ_div);
-        output.src = reader.result;
-        var fn = window[cb];
-      if (typeof fn === "function") fn(reader.result);
-        //document.getElementById('tmp').src=reader.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-      thisFile=this.files[0];
-      document.getElementById(targ_div).setAttribute('data-img',thisFile.name);
-      real_ImgBtn.value='';      
-    } 
-  });
-  real_ImgBtn.click();
-}
 
 function uploadNOW(file,newName,dir,ndiv){
   //alert('file='+file+ ', newName: '+newName);
@@ -449,4 +346,88 @@ function ZOOM_CLOSE(){
   document.getElementById('msg_zoom').style.display='none';
   document.getElementById('div_msg_items').style.display='block';
   document.getElementById('fm_msg').style.pointerEvents='auto';
+}
+
+function fm_download_data(){ 
+  if(!CURR_USER){
+    showLogin();
+    return;
+  }  
+  window.history.pushState({ noBackExitsApp: true }, '');
+  f_MainPage=false;
+  var dtl=
+    '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:1px solid red;">'+  
+      '<div style="width:100%;height:30px;font-size:22px;font-weight:bold;padding:5px;margin-top:0px;background:none;">Download Data</div>'+
+      
+      '<div style="width:100%;height:50px;margin-top:100px;padding:15px 0 0 0;border:1px solid blue;background:none;">No. of Records to Download : <span id="ctr_down">333</span></div>'+
+
+      '<div style="width:100%;height:50px;margin-top:25px;padding:10px 0 0 0;border:1px solid violet;background:none;">Current No. of Records : <span id="ctr_curr">112</span></div>'+
+      
+      '<div style="width:100%;height:50px;margin-top:20px;text-align:center;background:lightgray;">'+
+        '<input type="button" onclick="download_data()" class="color_head" style="width:80%;height:100%;border-radius:8px;" value="Download Now" />'+
+      '</div>'+
+    '</div>';
+
+  JBE_OPEN_VIEW(dtl,'cap','close_fm_download_data');
+  document.getElementById('cap_myView1').innerHTML='Download Main Data';
+
+  DB_CONSUMER=[]; DB_METER=[];  DB_USER=[];
+
+  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
+  .then(function (response) { console.log(response.data);        
+    DB_METER = response.data[0];  
+    DB_CONSUMER = response.data[1];    
+    DB_USER = response.data[2]; 
+
+    JBE_ONLINE=true;
+    document.getElementById('logger').style.color='navy';
+    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
+    document.getElementById('ctr_down').innerHTML=DB_CONSUMER.length;
+    document.getElementById('ctr_curr').innerHTML=iDB_CONSUMER.length;
+    console.log('DB HERE...');
+    //getAllDataFromIDX();
+  })    
+  .catch(function (error) { 
+    JBE_ONLINE=false;
+    console.log(error); 
+    showOffline();
+    //getProfile_IDB();
+  });
+
+}
+
+function close_fm_download_data(){
+  var vmode=document.getElementById('download_box').getAttribute('data-mode');
+  //alert(vmode);
+  showMainPage();
+}
+
+function download_data() {  
+  DB_CONSUMER=[]; DB_METER=[];
+  DB_UPLOAD=[];  
+  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
+  .then(function (response) { console.log(response.data);        
+
+    DB_METER = response.data[0];  
+    DB_CONSUMER = response.data[1];    
+    DB_USER = response.data[2];    
+    
+    document.getElementById('logger').style.color='navy';
+    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
+
+    //clearStore('Meter');clearStore('Consumer');
+    saveDataToIDX(DB_METER,0);
+    saveDataToIDX(DB_CONSUMER,1);
+    saveDataToIDX(DB_USER,2);
+    DB_CONSUMER=[];
+    DB_METER=[];
+    DB_USER=[];   
+    console.log('Data Downloaded...');
+  })    
+  .catch(function (error) { 
+    JBE_ONLINE=false;
+    console.log(error); 
+    showOffline();
+    //getProfile_IDB();
+  });  
 }

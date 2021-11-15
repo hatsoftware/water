@@ -82,24 +82,48 @@ hr{
   font-size:14px;font-weight:bold;
   width:100%;height:auto;margin-top:10px;border:1px solid gray;background:white;
 }
-.back_class{
-  float:left;width:20%;height:100%;background:none;
-}
-.cap_class{
-  float:right;width:80%;height:100%;font-size:18px;font-weight:bold;text-align:right;padding:5px;
-}
+
 .data_entry{
   float:right;width:180px;height:100%;font-weight:bold;padding:0px;text-align:center;color:black;
   border:0px solid gray;
 }
 
-.myView {	  
-  width:100%;height:100%;margin-top:0px;color:black;background-color:none;padding:10px;
-  margin-left:0%;
-  margin-right:0%;
+.myView {
+  display:none;  
+  z-index: 100;
+  height: 100%;
+  position:absolute;  
+  scroll-behavior: smooth;
+  /* transition: 0.5s;  */
+  background-color: rgba(0,0,0,0.6);
 }
-.myView div{
-  background:none;
+
+.myView_dtl{
+  width:100%;height:100px;padding:0px;overflow:auto;border:0px solid black;color:black;background:none;
+}
+
+.back_main{
+  height:30px;width:100%;padding:4px;text-align:left;color:white;
+  position: relative;border:0px solid white;
+}
+
+.back_class{
+  float:left;height:100%;font-size:20px;background:none;font-weight:normal;
+  width:100px;cursor:pointer;  
+}
+    .back_class img{
+      float:left;background:none;margin-left:10px;background:none; 
+    }
+    .back_class span{
+      float:left;margin-left:5px;color:none;
+    }
+
+.cap_class{
+  float:right;width:auto;height:100%;font-size:16px;font-weight:bold;margin-right:10px;text-align:right;padding:2px;
+}
+.cap_mid_class{
+  display: none;
+  position:absolute;top:0px;left:0px;height:100%;width:100px;padding:0px;background:none;
 }
 
 .bottomnav {	
@@ -536,7 +560,7 @@ img.center {display: block;margin-left: auto;margin-right: auto;}
 }
 
 .class_mtr0{
-  width:100%;height:50px;padding:2px;margin-top:2px;border:1px solid lightgray;
+  width:100%;height:40px;padding:2px;margin-top:5px;border:1px solid lightgray;
 }
 .class_mtr1{
   float:left;width:30%;height:100%;

@@ -1,125 +1,68 @@
 var CURR2_PROC='';
 var CURR2_PAGE=0;
 
-function showMainPage(){   
-  JBE_ONLINE_NAVI=navigator.onLine;    
-  JBE_ONLINE=false;   
-  //****************
-  JBE_ONLINE_NAVI=true;
-  //**************** 
+function showMainPage(){ 
+  //alert('ako main page');
   f_MainPage=true;
-  if(f_reload && JBE_MOBILE){
-    snackBar('Press Back key to Exit');
+  document.getElementById("myView1").setAttribute('data-JBEpage',0); //reset openview page to 0
+  if(f_reload){
+    snackBar('Press Back key to Exit');    
+    //alert('Press Back key to Exit');    
     f_reload=false;
   }
+  //allow_start(true);
+  //document.getElementById('div_nobar').style.display='none';
+  
+  openPage('page_main');  
+  //showMenu('mnu_main'); 
+  var vmenu='mnu_main';  
+  showMenu(vmenu);
+  //getNewMsg();  
   console.log('mainpage '+f_MainPage);
-  openPage('page_main');
-
-  document.getElementById('page_main').style.display='block';   
-  //document.getElementById('div_comm').style.color=JBE2_CLOR;
-
-  if(!CURR_METERNO){
-    //document.getElementById('div_cam').style.display='none';
-    if(JBE_MOBILE) { snackBar('Please Log In...'); }
-  }
-  
-  axios.post(JBE_API+'z_online.php',JBE_HEADER)  
-    .then(function (response) {
-      var res=parseInt(response.data);
-      //alert('z_online:  '+res);    
-       if(res > 0 && JBE_ONLINE_NAVI){       
-         JBE_ONLINE=true; 
-         get_app_db();
-         init_app(); 
-       }else{
-          showOffline();
-        }           
-    })
-    .catch(function (error) { 
-      //alert('naunsa na! '+error);
-      snackBar('ERROR: '+error);
-      if (!error.response) {
-        // network error (server is down or no internet)
-        console.log('JBE Found: network error (server is down or no internet)');
-      } else {
-        // http status code
-        const code = error.response.status;
-        // data from server while error
-        const response = error.response.data;
-        //console.log(code+' vs '+response);
-        MSG_SHOW(vbOk,"INTERNAL ERROR:","CODE:"+code+". Server Response: "+response+". <br>Please Refresh.",function(){},function(){}); 
-      }
-      showOffline();          
-    }); 
-  
-  showMenu('mnu_main'); 
-}
-
-function showHomePage(){
-  get_app_db();
-  init_app();
-  showMainPage();
-}
-
-
-function doValidate(){
-  var rval=true;
-  if(CURR_METERNO==null){
-    rval=false;
-  }  
-  return rval;
 }
 
 function showLogin(){
-  var dtl=
-  '<div id="login" style="width:100%;height:150px;font-size:14px;text-align:center;padding:5px;background:white;">'+
-    '<div style="width:100%;height:20%;font-size:20px;padding:5px;background:none;">Enter Project Code</div>'+
-    '<input id="vprojcode" type="password" style="width:100%;height:30%;margin-top:15px;text-align:center;" value="" />'+
-    '<input type="button" onclick="chk_projcode(vprojcode.value)" style="float:left;width:45%;height:30%;margin-top:10px;" value="Log In" />'+
-    '<input type="button" onclick="closeBox();" style="float:right;width:45%;height:30%;margin-top:10px;" value="Log Out" />'+
-  '</div>';
-  openBox('login','Log In',dtl,'closeLogin');
-}
-function closeLogin(){    
-  //showMainPage();
-  return;
+  var dtl=      
+    '<div id="login" data-zoom=0 data-close="0" style="width:100%;height:150px;text-align:center;background-color:none;">'+      
+      
+      '<input id="vuserid" type="text" style="width:100%;height:30px;margin-top:15px;text-transform:uppercase;text-align:center;" placeholder="User ID" value="" />'+
+  
+      '<input id="vpword" type="password" style="width:100%;height:30px;margin-top:15px;text-align:center;" placeholder="Password" value="" />'+
+
+      '<input type="button" onclick="chk_password(vuserid.value,vpword.value)" class="color_head" style="text-align:center;width:45%;height:30px;margin-top:10px;" value="Log In" />'+
+      
+    '</div>';  
+  var dtl2=      
+    '<div style="width:100%;height:30px;padding:10px 0 0 0;text-align:center;color:'+JBE_TXCLOR1+';background:none;">'+
+      'Password Facility'+      
+    '</div>';   
+  JBE_OPENBOX('login','Log In',dtl,dtl2); 
 }
 
-function chk_projcode(v){ 
-  //alert('checking : '+v);
-  v=v.toUpperCase();
-  DB_PROJ=[]; 
-  axios.post(JBE_API+'z_user.php', { request: 1, projcode: v }) 
+function chk_password(u,p){ 
+  //alert('checking : '+u+' pass: '+p);
+  p=p.toUpperCase();
+  DB_USER=[]; 
+  axios.post(JBE_API+'z_user.php', { request:1, uid:u, pword:p }) 
   .then(function (response) { 
     console.log(response.data);     
-    DB_PROJ=response.data; 
+    DB_USER=response.data; 
     if(response.data == "NONE"){          
-      MSG_SHOW(vbOk,"ERROR: Can't Access the Site.","Ask the assistance of your Team Leader for the Project Code.",function(){ closeBox(); },function(){});
+      MSG_SHOW(vbOk,"ACCESS DENIED","User Not Registered.<br>Ask the assistance of your Admin.",function(){ JBE_CLOSEBOX(); },function(){});
       return;
     }else{
-      CURR_METERNO=v
-      CURR2_COMMUNITY=DB_PROJ[0]["community"];
-      CURR2_METERS=parseInt(DB_PROJ[0]["ctr_meter"]);
-      CURR2_STATUS=parseInt(DB_PROJ[0]["stat"]);
-      CURR2_DATE_DOWN=DB_PROJ[0]["date_down"];
-      CURR2_DATE_EXP=DB_PROJ[0]["date_exp"];
-      CURR2_REPAIRS=DB_PROJ[0]["repair"];
-      CURR2_REPDATE=DB_PROJ[0]["repdate"];
-      
-      createCookie('cookie_proj',CURR_METERNO,1);
-      createCookie('cok_community',CURR2_COMMUNITY,1);    
-      createCookie('cok_meters',CURR2_METERS,1);    
-      createCookie('cok_status',CURR2_STATUS,1);    
-      createCookie('cok_downed',CURR2_DATE_DOWN,1);    
-      createCookie('cok_exp_date',CURR2_DATE_EXP,1);    
-      createCookie('cok_repairs',CURR2_REPAIRS,1);    
-      createCookie('cok_repdate',CURR2_REPDATE,1);    
-      //document.getElementById('div_comm').innerHTML=DB_PROJ[0]["community"];     
-      saveProfile_IDB();   
+      CURR_USER=p;
+      CURR_USERID=u;
+      CURR_USERNAME=DB_USER[0]["username"];      
+      CURR_AXTYPE=parseInt(DB_USER[0]["axtype"]);      
+      createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
+      createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
+      createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    
+      createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);    
+      //saveProfile_IDB();   
       init_app();
-      closeBox();       
-    }
-    
+      JBE_CLOSEBOX();
+    }    
   })
   .catch(function (error) { 
     console.log(error); 
@@ -127,9 +70,19 @@ function chk_projcode(v){
   }); 
 }
 
+function logout(){
+  CURR_USER='';
+  CURR_USERID='';
+  CURR_USERNAME='';      
+  CURR_AXTYPE=0;      
+  createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
+  createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
+  createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    
+  createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);    
+  init_app();
+}
+
 function fm_refresh(){
-  //chk_projcode(CURR_METERNO);  
-  //snackBar('System Refreshed...');
   showLogin();
 }
 
@@ -143,26 +96,7 @@ function fm_refresh(){
       '</div>'+
     */
 
-function xfm_ocr(){
-  var dtl=
-  '<div style="width:100%;height:100%;padding:5px;background:green;">'+
-    
-    '<div id="d1" style="margin-top:0px;width:100%;height:10%;padding:5px;background:pink;">'+
-      '<input type="file" onchange="load_file()" id="picker" style="width:100%;height:100%;background:lightblue;" />'+
-    '</div>'+
-    
-    '<div style="margin-top:2%;width:100%;height:67%;padding:5px;text-align:center;overflow:auto;background:violet;">'+
-      '<img id="nose" style="width:auto;max-width:100%;height:100%;padding:5px;overflow:auto;background:violet;" />'+
-    '</div>'+    
-    
-    '<div id="transcription" style="margin-top:2%;width:100%;height:20%;padding:5px;overflow:auto;background:pink;">'+
 
-    '</div>'+    
-    
-  '</div>';  
-
-  openView(1,dtl);      
-}
 
 function load_file () {
   var reader = new FileReader();
