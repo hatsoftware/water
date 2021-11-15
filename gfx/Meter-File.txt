@@ -1,0 +1,69 @@
+		 !DOCREF1    = zDOCREF1   
+		 !TRANSDAT   = zTRANSDAT  
+		 !ACCTNO2    = zACCTNO2   
+		 !CUSTNAME   = zCUSTNAME  
+		 !ACCTNO21   = zACCTNO21  
+		 !CUSTNAME1  = zCUSTNAME1 
+		 !PROPNO     = zPROPNO    
+		 !PROPNAME   = zPROPNAME  
+		 !EVENDAT    = zEVENDAT   
+		 !EVENTIM    = zEVENTIM   DROP TABLE IF EXISTS `CUSTMAST`;
+CREATE TABLE `CUSTMAST` (
+`USERID` Varchar(10) Not NULL Default '',
+`RECRDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`TRANSDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`READDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`LASTDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`CUSTNO` Varchar(10) Not NULL Default '',
+`ACCTNAME` Varchar(60) Not NULL Default '',
+`ADDRESS1` Varchar(60) Not NULL Default '',
+`SPOUSE` Varchar(60) Not NULL Default '',
+`TELNO` Varchar(15) Not NULL Default '',
+`MTRLOCATION` Varchar(60) Not NULL Default '',
+`MAKE` Varchar(60) Not NULL Default '',
+`SERIALNO` Varchar(20) Not NULL Default '',
+`MTRSIZE` Varchar(20) Not NULL Default '',
+`MTRCOUNT` Int(1) Not NULL Default 0,
+`INSTRUCT` Varchar(60 Not NULL Default '',
+`INITREAD` DECIMAL(20,2) Not NULL Default 0,
+`CURREAD` DECIMAL(20,2) Not NULL Default 0,
+`LASTREAD` DECIMAL(20,2) Not NULL Default 0,
+`GEOLAT` VARCHAR(25) Not NULL Default '',
+`GEOLONG` VARCHAR(25) Not NULL Default '',
+`PIC_NAME` Varchar(64) Not NULL Default '',
+`PIC_SIZE` MEDIUMINT UNSIGNED NULL,
+`PICFILE` MEDIUMBLOB NULL,
+`POSTED` Int(1) Not NULL Default 0,
+`TAGGED` Int(1) Not NULL Default 0,
+`ITYPE` Int(1) Not NULL Default 0,
+`TYPE1` Varchar(1) Not NULL Default '',
+`TYPE2` Varchar(1) Not NULL Default '',
+PRIMARY KEY (`CUSTNO`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `CUSTJRNL`;
+CREATE TABLE `CUSTJRNL` (
+`USERID` Varchar(10) Not NULL Default '',
+`RECRDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`TRANSDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`DUEDAT` DateTime Not NULL Default CURRENT_TIMESTAMP,
+`ACCTNO2` Varchar(10) Not NULL Default '',
+`INSTRUCT` Varchar(60) Not NULL Default '',
+`DOCREF1` Varchar(10) Not NULL Default '',
+`METREAD` Varchar(10) Not NULL Default '',
+`TYPE0` Varchar(1) Not NULL Default '',
+`TYPE1` Varchar(1) Not NULL Default '',
+`TYPE2` Varchar(1) Not NULL Default '',
+`AMOUNT` DECIMAL(20,2) Not NULL Default 0,
+`AMTPAID` DECIMAL(20,2) Not NULL Default 0,
+`POSTED` Int(1) Not NULL Default 0,
+`TAGGED` Int(1) Not NULL Default 0,
+`NDX` BIGINT(64) Not NULL AUTO_INCREMENT,
+PRIMARY KEY (`NDX`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+		 !EVENDAY    = zEVENDAY   
+		 !ADDRESS1   = zADDRESS1  
+		 !REMARKX    = zREMARKX   
+		 !REMARKX1   = zREMARKX1  
+		 !POSTED     = eval(zPOSTED)    
