@@ -1,6 +1,8 @@
 var THISFILE=[];
 clear_THISFILE();
-  
+//var JBE_ARY_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+var JBE_ARY_MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
 function JBE_GET_IMAGE(id,inp_file,targ_div,cb,likod){
   //alert('i:'+inp_file+'\nt:'+targ_div);    
   document.getElementById(inp_file).setAttribute('data-orig',targ_div);
@@ -220,7 +222,7 @@ function JBE_OPENBOX(div,title,dtl,dtl2) {
       '<div id="dtl_jbox" style="width:100%;height:auto;padding:5px;overflow:auto;border:1px solid black;color:black;background:white;">'+
         dtl+
       '</div>'+
-      '<div id="footer_jbox" class="jfooter" style="display:block;height:35px;width:100%;color:'+JBE_TXCLOR1+';background:'+JBE_CLOR+';">'+
+      '<div id="footer_jbox" class="jfooter" style="display:block;height:50px;width:100%;color:'+JBE_TXCLOR1+';background:'+JBE_CLOR+';">'+
         dtl2+
       '</div>'+    
     '</div>';
@@ -376,8 +378,8 @@ function JBE_CLOSE_VIEW(){
 //function EP_SetColorByClass(cls,clr1,clr2){
 function JBE_SET_COLOR_BY_CLASS(cls,clr1,clr2){	  
   document.querySelectorAll('.'+cls).forEach(function(el) {
-    el.style.color=clr1;
-    el.style.backgroundColor=clr2;
+    if(clr1){ el.style.color=clr1; }
+    if(clr2){ el.style.backgroundColor=clr2; }
   });
 }
   
@@ -433,27 +435,6 @@ function JBE_FILTER_ARRAY(db,cond){
   
   return aryDB;
 }
-
-
-
-
-
-function xxxJBE_FILTER_ARRAY(db,fld,filter){  
-  var aryDB=[];
-  var ctr=0;
-  for(var i=0;i<db.length;i++){
-    //alert(db[i]['pos']);
-    if(db[i][fld] != filter){ continue; }
-    
-    aryDB[ctr] = db[i];
-    //aryDB[ctr].push(db[i]);
-    //aryDTL.push(ob);  
-    //alert(db[i]);
-    ctr++;
-  }  
-  return aryDB;
-}
-
 
 function JBE_GETARRY(r_arry,r_fld,r_key){   
   //JBE_GETFLD('usertype',DB_CLIENTS,'usercode',usercode);  
@@ -674,7 +655,7 @@ function jeffNumber(mode,div) {
 }
 
 function JBE_DATE_FORMAT(date) {
-  var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Septemper", "October", "November", "December" ];
+  var monthNames = JBE_ARY_MONTH;
   let year = date.getFullYear();
   let month = (1 + date.getMonth()).toString().padStart(2, '0');
   let day = date.getDate().toString().padStart(2, '0');
@@ -682,5 +663,17 @@ function JBE_DATE_FORMAT(date) {
   return monthNames[date.getMonth()] + ' ' + day + ', ' + year;
 }
 
+function JBE_PRINTDIV(divName) {
+  var printContents = document.getElementById(divName).innerHTML;
+  w = window.open();
+  w.document.write(printContents);
+  w.document.write('<scr' + 'ipt type="text/javascript">' + 'window.onload = function() { window.print(); window.close(); };' + '</sc' + 'ript>');
+  w.document.close(); // necessary for IE >= 10
+  w.focus(); // necessary for IE >= 10
+  return true;
+}
+
 var JBE_COLORHEX = x => '#' + x.match(/\d+/g).map(y = z => ((+z < 16)?'0':'') + (+z).toString(16)).join('');
+
+
 //enad
