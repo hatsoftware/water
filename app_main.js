@@ -43,30 +43,6 @@ function init_app(){
   }
 }
 
-function get_app_db(){
-  //if(!CURR_METERNO){ return; }
-  DB_CONSUMER=[]; DB_METER=[];
-  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
-  .then(function (response) { console.log(response.data);        
-
-    DB_METER = response.data[0];  
-    DB_CONSUMER = response.data[1];    
-
-    JBE_ONLINE=true;
-    document.getElementById('logger').style.color='navy';
-    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
-
-    console.log('DB HERE...');
-  })    
-  .catch(function (error) { 
-    JBE_ONLINE=false;
-    console.log(error); 
-    showOffline();
-    //getProfile_IDB();
-  });
-}
-
-
 
 function myResizeFunction(){    
   //var H_BAR=parseInt(document.getElementById('div_bar').style.height);  
@@ -109,7 +85,7 @@ function myResizeFunction(){
   document.getElementById('mySidenav').style.height=(H_BODY+10)+'px';
 
   document.getElementById('page_meter').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_meter').style.height=(H_BODY-40)+'px';
+  //document.getElementById('page_dtl_meter').style.height=(H_BODY-40)+'px';
 
   //alert('user main height: '+document.getElementById('user_main').style.height);
   //document.getElementById('mySidenav').style.height=(window.innerHeight-H_HEADER)+'px';
@@ -122,73 +98,6 @@ function myResizeFunction(){
   }  
   document.getElementById('div_header').style.display='block';
   document.getElementById('div_footer').style.display='block';
-}
-
-function xxmyResizeFunction(){       
-  var screen_width=window.outerWidth;
-  var H_HEADER=parseInt(document.getElementById('div_header').style.height);  
-  var H_FOOTER=parseInt(document.getElementById('div_footer').style.height);
-  H_WRAPPER=window.innerHeight - (H_HEADER+H_FOOTER);
-  H_BODY=window.innerHeight - H_FOOTER;
-
-  document.getElementById('page_main').style.height=H_BODY+'px';
-  document.getElementById('user_main').style.height=H_WRAPPER+'px';
-  //document.getElementById('um_1').style.height='90%';
-  //document.getElementById('um_ver').style.height='10%';
-  //document.getElementById('um_ver').innerHTML='Version '+JBE2_VER;
-  //document.getElementById('um_2').style.height='100%';
-  //document.getElementById('div_cam').style.backgroundColor=JBE2_CLOR;
-
-  document.getElementById('mySidenav').style.marginTop=(H_HEADER-25)+'px';
-  document.getElementById('mySidenav').style.height=H_WRAPPER+25+'px';
-/*
-  document.getElementById('page_video').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_video').style.height=(H_BODY-40)+'px';
-  document.getElementById('page_zoom_video').style.height=(H_BODY-40)+'px';
-*/
-
-  document.getElementById('page_meter').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_meter').style.height=(H_BODY-40)+'px';
-
-  document.getElementById('page_setting').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_setting').style.height=(H_BODY-40)+'px';
-    
-  document.getElementById('page_ocr').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_ocr').style.height=(H_BODY-65+30)+'px';
-
-  document.getElementById('page_map').style.height=H_BODY+'px';
-  //document.getElementById('page_dtl_map').style.height=(H_BODY-65+30)+'px';
-
-  document.getElementById('page_profile').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_profile').style.height=(H_BODY-40)+'px';
-
-  document.getElementById('page_chat').style.height=H_BODY+'px';
-  document.getElementById('page_dtl_chat').style.height=(H_BODY-35)+'px';
-  document.getElementById('div_chat').style.height=(H_BODY-(40+30+2))+'px';
-
-  //document.getElementById('div_comm').style.color=JBE2_CLOR;
-  
-  if(screen_width > 500){
-    JBE_MOBILE=false;
-    /*
-    document.getElementById('div_header').style.display='none';
-    document.getElementById('div_footer').style.display='none';
-    document.getElementById('div_cam').style.display='none';
-    document.getElementById('center_btns').style.display='none';
-    document.getElementById('div_comm').innerHTML='This App runs in mobile platform only.';    
-    */
-  }else{
-    JBE_MOBILE=true;
-    /*
-    document.getElementById('div_header').style.display='block';
-    document.getElementById('div_footer').style.display='block';
-    document.getElementById('div_cam').style.display='none';
-    */
-    //document.getElementById('div_comm').innerHTML="the quick brown fox jumps over the lazy dog."
-  }  
-  document.getElementById('div_header').style.display='block';
-  document.getElementById('div_footer').style.display='block';
-  //document.getElementById('div_cam').style.display='none';
 }
 
 function showMenu(m){
@@ -350,47 +259,74 @@ function ZOOM_CLOSE(){
 
 function fm_download_data(){ 
   if(!CURR_USER){
-    showLogin();
-    return;
+    //showLogin();
+    //return;
   }  
   window.history.pushState({ noBackExitsApp: true }, '');
   f_MainPage=false;
   var dtl=
-    '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:1px solid red;">'+  
-      '<div style="width:100%;height:30px;font-size:22px;font-weight:bold;padding:5px;margin-top:0px;background:none;">Download Data</div>'+
-      
-      '<div style="width:100%;height:50px;margin-top:100px;padding:15px 0 0 0;border:1px solid blue;background:none;">No. of Records to Download : <span id="ctr_down">333</span></div>'+
+    '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:0px solid lightgray;background:white;">'+  
 
-      '<div style="width:100%;height:50px;margin-top:25px;padding:10px 0 0 0;border:1px solid violet;background:none;">Current No. of Records : <span id="ctr_curr">112</span></div>'+
+      '<div style="width:100%;height:15%;font-size:22px;font-weight:bold;padding:8% 0 0 0;background:none;">Download Data</div>'+
       
-      '<div style="width:100%;height:50px;margin-top:20px;text-align:center;background:lightgray;">'+
-        '<input type="button" onclick="download_data()" class="color_head" style="width:80%;height:100%;border-radius:8px;" value="Download Now" />'+
+      '<div style="width:100%;height:70%;padding:5%;border:0px solid darkgray;background:none;">'+  
+        '<div style="width:80%;height:100px;margin:10%;padding:10px;border-radius:5px;border:1px solid darkgray;background:none;">'+  
+          '<div style="width:100%;height:30%;font-weight:bold;padding:2px 0 0 0;background:none;">Files to be Downloaded</div>'+      
+          '<div id="div_dd1" style="width:100%;height:70%;padding:7px 0 0 0;background:none;"></div>'+        
+        '</div>'+
+
+        '<div style="width:80%;height:100px;margin:10%;padding:10px;border-radius:5px;border:1px solid darkgray;background:none;">'+  
+          '<div style="width:100%;height:30%;font-weight:bold;padding:2px 0 0 0;background:none;">Current Data</div>'+      
+          '<div id="div_dd2" style="width:100%;height:70%;padding:7px 0 0 0;background:none;"></div>'+        
+        '</div>'+
+      '</div>'+
+      
+      '<div style="width:100%;height:15%;padding:3% 0 0 0;text-align:center;background:none;">'+
+        '<input id="btn_download" type="button" onclick="download_data()" class="color_head" style="width:80%;height:50px;border-radius:8px;font-size:18px;" value="Download Now" />'+
       '</div>'+
     '</div>';
 
-  JBE_OPEN_VIEW(dtl,'cap','close_fm_download_data');
-  document.getElementById('cap_myView1').innerHTML='Download Main Data';
+  JBE_OPEN_VIEW(dtl,'Download Facility','close_fm_download_data');
+  //document.getElementById('cap_myView1').innerHTML='Download Main Data';
 
-  DB_CONSUMER=[]; DB_METER=[];  DB_USER=[];
-
-  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
+  DB_CONSUMER=[]; DB_METER=[];  DB_USER=[]; DB_SYSFILE=[];
+  //alert('app main: '+JBE_API);
+  
+  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO },JBE_HEADER)     
   .then(function (response) { console.log(response.data);        
     DB_METER = response.data[0];  
     DB_CONSUMER = response.data[1];    
     DB_USER = response.data[2]; 
+    DB_SYSFILE = response.data[3]; 
 
     JBE_ONLINE=true;
     document.getElementById('logger').style.color='navy';
     document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
-    document.getElementById('ctr_down').innerHTML=DB_CONSUMER.length;
-    document.getElementById('ctr_curr').innerHTML=iDB_CONSUMER.length;
+
+    dtl=
+      '<div style="width:100%;height:100%;background:none;">'+
+        '<div style="width:100%;height:20px;">Meter File : '+DB_METER.length+'</div>'+
+        '<div style="width:100%;height:20px;">Consumer File : '+DB_CONSUMER.length+'</div>'+        
+      '</div>';
+    document.getElementById('div_dd1').innerHTML=dtl;
+
+    dtl=
+      '<div style="width:100%;height:100%;background:none;">'+
+        '<div style="width:100%;height:20px;">Meter File : '+iDB_METER.length+'</div>'+
+        '<div style="width:100%;height:20px;">Consumer File : '+iDB_CONSUMER.length+'</div>'+        
+      '</div>';
+    document.getElementById('div_dd2').innerHTML=dtl;
+    
+
+
     console.log('DB HERE...');
     //getAllDataFromIDX();
   })    
   .catch(function (error) { 
     JBE_ONLINE=false;
     console.log(error); 
-    showOffline();
+    document.getElementById('btn_download').disabled=true;
+    MSG_SHOW(vbOk,"ERROR: ",error,function(){},function(){});
     //getProfile_IDB();
   });
 
@@ -405,12 +341,19 @@ function close_fm_download_data(){
 function download_data() {  
   DB_CONSUMER=[]; DB_METER=[];
   DB_UPLOAD=[];  
-  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO })     
+  clearStore('Meter');
+  clearStore('Consumer');
+  clearStore('User');
+  clearStore('TranMeter');
+  clearStore('Sysfile');
+  //alert(JBE_API);
+  axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO },JBE_HEADER)     
   .then(function (response) { console.log(response.data);        
 
     DB_METER = response.data[0];  
     DB_CONSUMER = response.data[1];    
     DB_USER = response.data[2];    
+    DB_SYSFILE = response.data[3];    
     
     document.getElementById('logger').style.color='navy';
     document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
@@ -419,15 +362,20 @@ function download_data() {
     saveDataToIDX(DB_METER,0);
     saveDataToIDX(DB_CONSUMER,1);
     saveDataToIDX(DB_USER,2);
+    saveDataToIDX(DB_SYSFILE,3);
+    
     DB_CONSUMER=[];
     DB_METER=[];
     DB_USER=[];   
     console.log('Data Downloaded...');
+    getAllDataFromIDX();
+    MSG_SHOW(vbOk,"Download Successful :","Download Successful.",function(){ JBE_CLOSE_VIEW(); },function(){});
   })    
   .catch(function (error) { 
     JBE_ONLINE=false;
     console.log(error); 
-    showOffline();
+    //showOffline();
+    snackBar(error);
     //getProfile_IDB();
   });  
 }

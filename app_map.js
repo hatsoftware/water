@@ -113,7 +113,6 @@ function jlocate(f) {
 //map.on('zoomend', changeLocateMaxZoom);
 
 function changeLocateMaxZoom(e) {
-  alert(9);
   if (map.locateOptions) {
       map.locateOptions.maxZoom = map.getZoom();
   }

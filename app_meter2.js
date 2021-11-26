@@ -24,7 +24,7 @@ const constraints = {
 };
 
 function openCamera(){
-  alert('opening camera');
+  //alert('opening camera');
   navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
 }
 
@@ -61,9 +61,6 @@ function setter(m){
   document.getElementById("btn_cam_main").style.backgroundColor=JBE2_CLOR2; 
   document.getElementById("btn_cam_cancel").style.pointerEvents='auto';
   document.getElementById("btn_cam_cancel").style.backgroundColor=JBE2_CLOR2;  
-
-  //document.getElementById("meter_read").disabled=false;
-  //showRecordBtn(parseInt(document.getElementById("meter_read").value));
   
   if(m==1){
     document.getElementById("btn_cam_main").setAttribute('data-mode',1);   
@@ -73,9 +70,6 @@ function setter(m){
     document.getElementById("btn_cam_txt").innerHTML="Capture";
     document.getElementById("btn_cam_txt2").innerHTML="Cancel";  
     document.getElementById("btn_cam_img2").src='gfx/jback.png';
-
-    //document.getElementById("meter_read").disabled=true;    
-    //showRecordBtn(0);
   }
 }
 
@@ -87,7 +81,8 @@ function tira(){
   canvas.width = jvideo.videoWidth;
   canvas.height = jvideo.videoHeight;
   //canvas.width=300;
-  canvas.height=150;
+  //canvas.height=300;
+  //canvas.height=200;
   
   //canvas.getContext('2d').drawImage(jvideo, 0, 0);    
   canvas.getContext('2d').drawImage(jvideo, 0, -25);    

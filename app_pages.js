@@ -21,11 +21,11 @@ function showMainPage(){
   console.log('mainpage '+f_MainPage);
 }
 
-function showLogin(){
+function showLogin(){  
   var dtl=      
     '<div id="login" data-zoom=0 data-close="0" style="width:100%;height:150px;text-align:center;background-color:none;">'+      
       
-      '<input id="vuserid" type="text" style="width:100%;height:30px;margin-top:15px;text-transform:uppercase;text-align:center;" placeholder="User ID" value="" />'+
+      '<input id="vuserid" type="text" style="width:100%;height:30px;margin-top:15px;text-align:center;" placeholder="User ID" value="" />'+
   
       '<input id="vpword" type="password" style="width:100%;height:30px;margin-top:15px;text-align:center;" placeholder="Password" value="" />'+
 
