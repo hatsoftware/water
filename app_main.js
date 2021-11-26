@@ -267,7 +267,10 @@ function fm_download_data(){
   var dtl=
     '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:0px solid lightgray;background:white;">'+  
 
-      '<div style="width:100%;height:15%;font-size:22px;font-weight:bold;padding:8% 0 0 0;background:none;">Download Data</div>'+
+      '<div style="width:100%;height:15%;font-size:22px;font-weight:bold;padding:6% 0 0 0;background:none;">'+
+        '<div>Download Data</div>'+
+        '<div style="font-size:14px;color:navy;">'+JBE_API+'</div>'+      
+      '</div>'+
       
       '<div style="width:100%;height:70%;padding:5%;border:0px solid darkgray;background:none;">'+  
         '<div style="width:80%;height:100px;margin:10%;padding:10px;border-radius:5px;border:1px solid darkgray;background:none;">'+  
