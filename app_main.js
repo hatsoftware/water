@@ -294,7 +294,7 @@ function fm_download_data(){
 
   DB_CONSUMER=[]; DB_METER=[];  DB_USER=[]; DB_SYSFILE=[];
   //alert('app main: '+JBE_API);
-  
+  showProgress(true);
   axios.post(JBE_API+'z_tanan.php', { request: 0, meterno: CURR_METERNO },JBE_HEADER)     
   .then(function (response) { console.log(response.data);        
     DB_METER = response.data[0];  
@@ -319,15 +319,14 @@ function fm_download_data(){
         '<div style="width:100%;height:20px;">Consumer File : '+iDB_CONSUMER.length+'</div>'+        
       '</div>';
     document.getElementById('div_dd2').innerHTML=dtl;
-    
-
-
+    showProgress(false);
     console.log('DB HERE...');
     //getAllDataFromIDX();
   })    
   .catch(function (error) { 
     JBE_ONLINE=false;
     console.log(error); 
+    showProgress(false);
     document.getElementById('btn_download').disabled=true;
     MSG_SHOW(vbOk,"ERROR: ",error,function(){},function(){});
     //getProfile_IDB();
