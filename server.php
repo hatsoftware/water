@@ -1,5 +1,5 @@
 <?php
-$cn=0;
+$cn=1;
 
 if($cn==0) {	//local ias
   $conn_host = "localhost";
