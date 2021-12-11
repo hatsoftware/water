@@ -4,9 +4,8 @@ var db;
 
 var IDX_STORE = [  
   { "id":0, "flename":"Meter", "numrec":0, "init":1 },
-  { "id":1, "flename":"Consumer", "numrec":0, "init":1 },
-  { "id":2, "flename":"User", "numrec":0, "init":1 },
-  { "id":3, "flename":"Sysfile", "numrec":0, "init":1 }
+  { "id":1, "flename":"Consumer", "numrec":0, "init":1 },  
+  { "id":2, "flename":"User", "numrec":0, "init":1 }
 ];
 
 
@@ -154,7 +153,7 @@ function getDataFromIDX(i,db2) {
           custno:cursor.value.custno,
           name:cursor.value.name,
           addrss:cursor.value.addrss
-        };              
+        };                    
       }else if(i==2){ //user
         ob = {
           id:i,
@@ -162,11 +161,6 @@ function getDataFromIDX(i,db2) {
           pword:cursor.value.pword,
           username:cursor.value.username,
           axtype:cursor.value.axtype
-        };              
-      }else if(i==3){ //sysfile
-        ob = {
-          id:i,
-          ip:cursor.value.ip
         };              
       }
 
@@ -182,10 +176,7 @@ function getDataFromIDX(i,db2) {
         iDB_CONSUMER=[]; iDB_CONSUMER=aryIDB;
       }else if(i==2){
         iDB_USER=[]; iDB_USER=aryIDB;
-      }else if(i==3){
-        iDB_SYSFILE=[]; iDB_SYSFILE=aryIDB;
-      }
-      //alert(IDX_STORE[i]['flename']+' : '+aryIDB.length);
+      }      
       IDX_STORE[i]['numrec']=aryIDB.length;
     }    
   }
@@ -211,22 +202,22 @@ async function putDataToIDX(i,aryDB,n){
     }
     
     ob = { 
-      meterno:aryDB[i]['meterno'],
-      serialno:aryDB[i]['serialno'],
-      custno:aryDB[i]['custno'],
-      lat:aryDB[i]['lat'],
-      lng:aryDB[i]['lng'],
-      curr_read:aryDB[i]['curr_read'],
-      last_read:aryDB[i]['last_read'],
+      meterno:aryDB[i]['METERNO'],
+      serialno:aryDB[i]['SERIALNO'],
+      custno:aryDB[i]['CUSTNO'],
+      lat:aryDB[i]['GEOLAT'],
+      lng:aryDB[i]['GEOLNG'],
+      curr_read:aryDB[i]['CURREAD'],
+      last_read:aryDB[i]['LASTREAD'],
       photo:photo
     };
   }else if(n==1){    //consumer
     ob = { 
       id:i,
-      custno:aryDB[i]['custno'],
-      name:aryDB[i]['name'],
-      addrss:aryDB[i]['addrss']
-    };
+      custno:aryDB[i]['CUSTNO'],
+      name:aryDB[i]['ACCTNAME'],
+      addrss:aryDB[i]['ADDRESS1']
+    };  
   }else if(n==2){    //user
     ob = { 
       id:i,
@@ -234,11 +225,6 @@ async function putDataToIDX(i,aryDB,n){
       pword:aryDB[i]['pword'],
       username:aryDB[i]['username'],
       axtype:aryDB[i]['axtype']
-    };
-  }else if(n==3){    //sysfile
-    ob = { 
-      id:i,
-      ip:aryDB[i]['ip']
     };
   }
   
@@ -266,13 +252,12 @@ async function putMeterToIDX(){
   var ob;
   var photo=document.getElementById('mtr_pic').src;  
   if(photo){      
-    await JBE_BLOB(0,photo).then(result => photo=result);    
+    await JBE_BLOB(0,photo).then(result => photo=result);
   }else{
     photo='';
   }
 
   var monbill=save_monbill(document.getElementById('mtr_bill').value);
-
   
   ob = {
     meterno:v_meterno,    

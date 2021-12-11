@@ -1,4 +1,4 @@
-const cacheName = 'WATER-1127';
+const cacheName = 'WATER-0111';
 const staticAssets = [
   './',
   './index.html',
@@ -7,31 +7,16 @@ const staticAssets = [
   
   './js/axios.min.js','./js/coke.js','./js/je_msg.js','./js/enadlib.js',
 
-  './app_admin.js','./app_chat.js','./app_db.js','./app_main.js','./app_meter.js',
-  './app_meter2.js','./app_pages.js','./app_profile.js','./app_setting.js','./app_video.js',
+  './app_admin.js','./app_db.js','./app_main.js','./app_meter.js','./app_meter2.js','./app_pages.js','./app_upload.js',
 
-  './gfx/apple-touch-iphone.png', 
-  './gfx/jimage.png', './gfx/ref.png', 
-  './gfx/proc.gif',  
+  './refreshDB.php','./server.php','./z_tanan.php','./z_uploadMETER.php',
 
-  './gfx/author.png',  './gfx/logo.png',  
-  
-  './gfx/img_empty.png',  
-  './gfx/jadmin.png',  
-  './gfx/jback.png',  
-  './gfx/jcam.png',
-    
-  './gfx/jedit.png',
-  './gfx/jham.png',  
-  './gfx/jhome.png',
-  
-  './gfx/jmsg.png', 
-  './gfx/jsave.png',
-  './gfx/jsend.png',
-
-  './gfx/jsite.png',  
-
-  './gfx/eMeter.png',  
+  './gfx/apple-touch-iphone.png','./gfx/author.png','./gfx/bg_app.jpg','./gfx/eMeter.png',
+  './gfx/favicon.ico','./gfx/icon-192x192.png','./gfx/img_empty.png','./gfx/jadmin.png',
+  './gfx/jback.png', './gfx/jcam.png','./gfx/jcancel.png','./gfx/jclose.png','./gfx/jdown.png',
+  './gfx/jdownload.png','./gfx/jedit.png','./gfx/jham.png','./gfx/jimage.png','./gfx/jprn.png',
+  './gfx/jsave.png','./gfx/jsend.png','./gfx/upload.png',
+  './gfx/proc_logo.gif', 
   
   './manifest.webmanifest'
 ];

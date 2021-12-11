@@ -51,7 +51,7 @@ function do_uploadMETER(){
   MSG_SHOW(vbYesNo,"CONFIRM:","Are you sure to UPLOAD all the records?",
     function(){   
       showProgress(true);
-      axios.post(JBE_API+'z_uploadMeter.php', { request: 3,
+      axios.post('z_uploadMeter.php', { request: 3,
         aryItems:JSON.stringify(iDB_TRANMETER)        
       }, JBE_HEADER)
       .then(function (response) { 

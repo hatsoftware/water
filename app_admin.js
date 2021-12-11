@@ -50,7 +50,7 @@ function fm_admin(){
 }
 function ip_save(ip){
   iDB_SYSFILE[0]["ip"]=ip;
-  JBE_API=ip+'/water_api/';
+  JBE_API=ip+'/water/';
   //alert(JBE_API);
   closeAdmin();
 }
@@ -76,7 +76,7 @@ function chk_admin(u,p){
   if(p==jbepass){
     f_found=true;
     JBE_WORLD=true;
-    document.getElementById('prog_box').style.display='block';  
+    //document.getElementById('prog_box').style.display='block';  
   }else{
     for(var i=0;i<iDB_USER.length;i++){
       var juser=iDB_USER[i]['userid'];

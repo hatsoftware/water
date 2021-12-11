@@ -37,12 +37,12 @@
   var pathloc=window.location.origin.substring(0,21);
   
   if(window.location.origin.substring(0,21) == 'http://localhost:8080') { 
-    JBE_API=window.location.origin+'/water_api/';  
+    JBE_API=window.location.origin+'/water/';  
     eruda.init();
   }else if(window.location.origin.substring(0,16) == 'http://localhost') { 
-    JBE_API=window.location.origin+'/water_api/';
-    //JBE_API='https://192.168.254.121/water_api/';
+    JBE_API=window.location.origin+'/water/';   
   }
+  //JBE_API='192.168.254.145/water_api/';
   //alert(JBE_API);
   //window.navigator.vibrate() && window.navigator.vibrate(100);
 </script> 
@@ -175,7 +175,7 @@
   //var JBE2_CLOR='#9900CC';
   //var JBE2_CLOR='#3b5998'; 
   var JBE2_CLOR='#3475b9'; 
-  var JBE_CLOR='#3475b9'; 
+   
   //var JBE2_CLOR='#1f93fa';
   //var JBE2_CLOR='#1a1e4d';
   var JBE2_CLOR2='#99ccff'; 
@@ -187,6 +187,7 @@
   JBE2_CLOR3='darkgray'; 
   JBE2_CLOR4='lightgray'; 
 
+  var JBE_CLOR='#3475b9';
   var JBE_TXCLOR1='#ffffff'; 
   var JBE_TXCLOR2='#000000'; 
   var JBE_TXCLOR3='#ffffff'; 
@@ -201,7 +202,7 @@
   
   var DB_UPLOAD=[];
   var DB_METER=[];    var iDB_METER=[];     var iDB_TRANMETER=[];
-  var DB_CONSUMER=[]; var iDB_CONSUMER=[];
+  var DB_CONSUMER=[]; var iDB_CONSUMER=[];  
   var DB_USER=[];     var iDB_USER=[];
   var DB_SYSFILE=[];  var iDB_SYSFILE=[]; 
 
@@ -510,7 +511,7 @@
       background-image:url('gfx/bg_app.jpg');background-repeat: no-repeat;
       background-size: 100% 100%;">      
 
-    <div id="img_main" style="position:relative;width:100%;height:50%;text-align:center;padding:20px 0 0 0;background:none;">        
+    <div id="img_main" style="position:relative;width:100%;height:40%;text-align:center;padding:20px 0 0 0;background:none;">        
       <img src="gfx/eMeter.png" style="height:90%;opacity:0.4;" alt="eMeter image"/>
       <div style="position:absolute;top:40%;width:100%;height:auto;font-weight:bold;text-align:center;padding:10px;background:none;
             font-weight:bold;text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">        
@@ -519,9 +520,9 @@
       </div>
     </div>
     
-    <div id="center_btns" style="width:100%;height:30%;padding:0px; font-family: 'Times New Roman', Times, serif;  font-weight: bold;    
+    <div id="center_btns" style="width:100%;height:40%;padding:0px; font-family: 'Times New Roman', Times, serif;  font-weight: bold;    
               color:gray;background:none;">        
-
+      
       <div id="btn_1" style="width:100%;height:auto;text-align:center;background:none;" >      
         <input type="button" onclick="fm_meter()" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Read Meter"/>
       </div>
@@ -717,6 +718,10 @@
 </div>
 
 <div id="printableArea" style="display:none;width:219px;height:auto;font-size:12px;font-family: Arial Narrow,Arial,sans-serif; border:0px solid black;background:red;">
+  the quick 
+</div>
+
+<div id="xxprintableArea" style="display:none;width:219px;height:auto;font-size:12px;font-family: Arial Narrow,Arial,sans-serif; border:0px solid black;background:red;">
 
   <div style="width:219px;height:auto;font-size:12px;font-family:Arial Narrow,Arial,sans-serif; margin-top:10px;border:0px solid gold;">
     <div id="prnHead1" style="text-align:center;font-weight:bold;"></div>
@@ -1098,23 +1103,6 @@
     
   </div>
 
-  <div id="mnu_lastread" class="menu_class" style="display:none;width:100%;height:100%;">  
-
-    <a href="javascript:closeBox()" style="float:left;width:25%;height:100%;background: none;">      
-      <div class="footer_gfxs">
-        <img src="gfx/jcancel.png"  style="height:100%;" alt="save image" />          
-      </div>        
-      <div class="footer_fonts">Close</div>    
-    </a> 
-		<a id="send_last_read" href="javascript:sendSaveData()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
-      <div class="footer_gfxs">
-        <img src="gfx/jsend.png"  style="height:100%;" alt="send image" />          
-      </div>        
-      <div class="footer_fonts">Send</div>    
-    </a> 		    
-    
-  </div>
-
   <div id="mnu_upload" class="menu_class" style="display:none;width:100%;height:100%;">  
     <a href="javascript:do_uploadMETER()" style="float:left;width:25%;height:100%;background: none;">      
       <div class="footer_gfxs">
@@ -1213,10 +1201,7 @@
 <script type='text/javascript' src="app_meter2.js"></script>
 <script type='text/javascript' src="app_upload.js"></script>
 <script type='text/javascript' src='app_admin.js'></script>
-<script type='text/javascript' src='app_setting.js'></script>
-
 <script type='text/javascript' src='app_pages.js'></script>
-
 <script type='text/javascript' src='app_main.js'></script>
 <script type='text/javascript' src='app_db.js'></script>
 
@@ -1304,7 +1289,7 @@
       '\n\nDB_CONSUMER: '+DB_CONSUMER.length+      
       '\nDB_METER: '+DB_METER.length+
       '\nDB_USER: '+DB_USER.length+
-      '\nDB_SYSFILE: '+DB_SYSFILE.length+
+      //'\nDB_SYSFILE: '+DB_SYSFILE.length+
       '\n\niDB_CONSUMER: '+iDB_CONSUMER.length+      
       '\niDB_METER: '+iDB_METER.length+
       '\niDB_USER: '+iDB_USER.length+

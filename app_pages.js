@@ -40,34 +40,30 @@ function showLogin(){
 }
 
 function chk_password(u,p){ 
-  //alert('checking : '+u+' pass: '+p);
-  p=p.toUpperCase();
   DB_USER=[]; 
-  axios.post(JBE_API+'z_user.php', { request:1, uid:u, pword:p }) 
-  .then(function (response) { 
-    console.log(response.data);     
-    DB_USER=response.data; 
-    if(response.data == "NONE"){          
-      MSG_SHOW(vbOk,"ACCESS DENIED","User Not Registered.<br>Ask the assistance of your Admin.",function(){ JBE_CLOSEBOX(); },function(){});
-      return;
-    }else{
-      CURR_USER=p;
-      CURR_USERID=u;
-      CURR_USERNAME=DB_USER[0]["username"];      
-      CURR_AXTYPE=parseInt(DB_USER[0]["axtype"]);      
-      createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
-      createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
-      createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    
-      createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);    
-      //saveProfile_IDB();   
-      init_app();
-      JBE_CLOSEBOX();
-    }    
-  })
-  .catch(function (error) { 
-    console.log(error); 
-    snackBar('No Network...');
-  }); 
+  var f_found=false;
+  for(var i=0;i<iDB_USER.length;i++){
+    //alert('userid : '+iDB_USER[i]['userid']+'='+u+', pass: '+iDB_USER[i]['pword']+'='+p);
+    if(iDB_USER[i]['userid'] == u && iDB_USER[i]['pword'] == p){
+      f_found=true;
+      break;
+    }
+  }
+  if(!f_found){ 
+    MSG_SHOW(vbOk,"ACCESS DENIED","User Not Registered.<br>Ask the assistance of your Admin.",function(){ JBE_CLOSEBOX(); },function(){});
+    return;
+  }
+
+  CURR_USER=p;
+  CURR_USERID=u;
+  CURR_USERNAME=iDB_USER[i]["username"];      
+  CURR_AXTYPE=parseInt(iDB_USER[i]["axtype"]);      
+  createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
+  createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
+  createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    
+  createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);      
+  init_app();
+  JBE_CLOSEBOX();
 }
 
 function logout(){
