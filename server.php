@@ -1,11 +1,11 @@
 <?php
-$cn=1;
+$cn=0;
 
 if($cn==0) {	//local ias
   $conn_host = "localhost";
-  //$conn_host = "192.168.254.121";
-  $conn_host = "192.168.19.2";
-  $conn_host = "127.0.0.1";
+  //$conn_host = "192.168.254.120";
+  //$conn_host = "192.168.19.2";
+  //$conn_host = "127.0.0.1";
   $conn_user = "root";
   $conn_pass = "";
   $conn_name = "ias";
