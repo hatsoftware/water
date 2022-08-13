@@ -5,6 +5,7 @@ function fm_download_data(){
     }  
     window.history.pushState({ noBackExitsApp: true }, '');
     f_MainPage=false;
+    var api_dir='file:///C:/wamp/www/water/';
     var dtl=
       '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:0px solid lightgray;background:white;">'+  
   
@@ -46,7 +47,7 @@ function fm_download_data(){
     //iDB_METER=[]; iDB_UTIL=[]; iDB_USER=[]; 
     //alert('app main: '+JBE_API);
     showProgress(true);
-    axios.post('z_tanan.php', { request: 0, brgyno: CURR_BRGYNO },JBE_HEADER)     
+    axios.post(api_dir+'z_tanan.php', { request: 0, brgyno: CURR_BRGYNO },JBE_HEADER)     
     .then(function (response) { 
       console.log(response.data);        
       
@@ -116,7 +117,7 @@ function fm_download_data(){
     clearStore('Meter');    
     clearStore('TranMeter');
     showProgress(true);
-    axios.post('z_meter.php', { request: 1, brgyno: CURR_BRGYNO },JBE_HEADER)     
+    axios.post(api_dir+'z_meter.php', { request: 1, brgyno: CURR_BRGYNO },JBE_HEADER)     
     .then(function (response) { console.log(response.data);        
   
       DB_METER = response.data;
