@@ -22,6 +22,10 @@ function showMainPage(){
 }
 
 function showLogin(){  
+  if(iDB_USER.length==0){
+    MSG_SHOW(vbOk,"FILES ARE EMPTY","Please Download Files.",function(){},function(){});
+    return;
+  }
   var dtl=      
     '<div id="login" data-zoom=0 data-close="0" style="width:100%;height:150px;text-align:center;background-color:none;">'+      
       
@@ -57,12 +61,15 @@ function chk_password(u,p){
   CURR_USER=p;
   CURR_USERID=u;
   CURR_USERNAME=iDB_USER[i]["username"];      
-  CURR_AXTYPE=parseInt(iDB_USER[i]["axtype"]);      
+  CURR_AXTYPE=parseInt(iDB_USER[i]["axtype"]);    
+ 
+  
   createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
   createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
   createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    
-  createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);      
+  createCookie(CURR_CLIENT+'_axtype',CURR_AXTYPE,1);          
   init_app();
+ 
   JBE_CLOSEBOX();
 }
 
@@ -71,6 +78,10 @@ function logout(){
   CURR_USERID='';
   CURR_USERNAME='';      
   CURR_AXTYPE=0;      
+  CURR_BRGYNO='';
+  
+  iDB_METER=[]; clearStore('Meter'); clearStore('TranMeter');
+
   createCookie(CURR_CLIENT+'_userid',CURR_USERID,1);
   createCookie(CURR_CLIENT+'_pword',CURR_USER,1);    
   createCookie(CURR_CLIENT+'_username',CURR_USERNAME,1);    

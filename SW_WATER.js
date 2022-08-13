@@ -1,4 +1,4 @@
-const cacheName = 'WATER-0111';
+const cacheName = 'WATER-065881';
 const staticAssets = [
   './',
   './index.html',
@@ -9,7 +9,7 @@ const staticAssets = [
 
   './app_admin.js','./app_db.js','./app_main.js','./app_meter.js','./app_meter2.js','./app_pages.js','./app_upload.js',
 
-  './refreshDB.php','./server.php','./z_tanan.php','./z_uploadMETER.php',
+  //'./refreshDB.php','./server.php','./z_tanan.php','./z_uploadMETER.php',
 
   './gfx/apple-touch-iphone.png','./gfx/author.png','./gfx/bg_app.jpg','./gfx/eMeter.png',
   './gfx/favicon.ico','./gfx/icon-192x192.png','./gfx/img_empty.png','./gfx/jadmin.png',

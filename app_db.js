@@ -3,9 +3,10 @@ var dbReady = false;
 var db;
 
 var IDX_STORE = [  
-  { "id":0, "flename":"Meter", "numrec":0, "init":1 },
-  { "id":1, "flename":"Consumer", "numrec":0, "init":1 },  
-  { "id":2, "flename":"User", "numrec":0, "init":1 }
+  { "id":0, "flename":"Meter", "numrec":0, "init":1 },  
+  { "id":1, "flename":"User", "numrec":0, "init":1 },
+  { "id":2, "flename":"Util", "numrec":0, "init":1 },
+  { "id":3, "flename":"Sysfile", "numrec":0, "init":1 }
 ];
 
 
@@ -101,7 +102,7 @@ function countRecordIDX(n){
 
 /****************************************/
 /****************************************/
-function getAllDataFromIDX() {   
+function getAllDataFromIDX(jmode) {   
   //alert('getAllDataFromIDX: '+IDX_STORE.length);
   //alert(CURR_IDX_DB);
   var request = indexedDB.open(CURR_IDX_DB, dbVersion);  
@@ -114,14 +115,16 @@ function getAllDataFromIDX() {
     for(var i=0;i < IDX_STORE.length;i++){
       getDataFromIDX(i,db2);  
     }
+    if(jmode){
+      MSG_SHOW(vbOk,"Download Successful :","Download Successful.",function(){ JBE_CLOSE_VIEW(); },function(){});
+    }
   }  
 }  
 
 function getDataFromIDX(i,db2) {  
   var idx=0;
   var aryIDB=[]; 
-  var flename=IDX_STORE[i]['flename'];
-  
+  var flename=IDX_STORE[i]['flename'];  
       
   var trans = db2.transaction([flename]);
   var object_store = trans.objectStore(flename);
@@ -141,28 +144,42 @@ function getDataFromIDX(i,db2) {
         ob = {
           id:i,
           meterno:cursor.value.meterno,
-          serialno:cursor.value.serialno,
+          name:cursor.value.name,
+          addrss:cursor.value.addrss,
+          serialno:cursor.value.serialno,          
+          mtrstat:cursor.value.mtrstat,
           custno:cursor.value.custno,
           lat:cursor.value.lat,
           lng:cursor.value.lng,
-          last_read:cursor.value.last_read
-        };  
-      }else if(i==1){ //consumer
-        ob = {
-          id:i,
-          custno:cursor.value.custno,
-          name:cursor.value.name,
-          addrss:cursor.value.addrss
-        };                    
-      }else if(i==2){ //user
+          duedate:cursor.value.duedate,
+          monbill:cursor.value.monbill,
+          prev_date:cursor.value.prev_date,
+          curr_date:cursor.value.curr_date,
+          prev_read:cursor.value.prev_read,
+          curr_read:cursor.value.curr_read          
+        };            
+      }else if(i==1){ //user
         ob = {
           id:i,
           userid:cursor.value.userid,
           pword:cursor.value.pword,
           username:cursor.value.username,
-          axtype:cursor.value.axtype
+          areano:cursor.value.areano
+        };              
+      }else if(i==2){ //util
+        ob = {
+          id:i,
+          flatrate:cursor.value.flatrate,
+          mincub:cursor.value.mincub,          
+          ratecub:cursor.value.ratecub
+        };              
+      }else if(i==3){ //sysfile
+        ob = {
+          id:i,
+          ip:cursor.value.ip
         };              
       }
+      
 
       aryIDB[idx]=ob;  
       idx++;
@@ -170,13 +187,13 @@ function getDataFromIDX(i,db2) {
     }else{
       if(i==0){
         iDB_METER=[]; iDB_METER=aryIDB;              
-        //show_candidates();   
-        //alert('show_candidates:'+DB_CANDIDATE.length);
       }else if(i==1){
-        iDB_CONSUMER=[]; iDB_CONSUMER=aryIDB;
-      }else if(i==2){
         iDB_USER=[]; iDB_USER=aryIDB;
-      }      
+      }else if(i==2){
+        iDB_UTIL=[]; iDB_UTIL=aryIDB;
+      }else if(i==3){
+        iDB_SYSFILE=[]; iDB_SYSFILE=aryIDB;
+      }  
       IDX_STORE[i]['numrec']=aryIDB.length;
     }    
   }
@@ -193,38 +210,52 @@ function saveDataToIDX(aryDB,n) {
 async function putDataToIDX(i,aryDB,n){   
   var ob;
   if(n==0){    //meter
-    
-    var photo=JBE_API+'upload/photo/'+aryDB[i]['code']+'.jpg';  
+    //alert (aryDB[i]['AVG']);
+    //var photo=JBE_API+'upload/photo/'+aryDB[i]['code']+'.jpg';  
+    var photo='';
     if(aryDB[i]['photo']){      
       await JBE_BLOB(n,photo).then(result => photo=result);
     }else{
       photo='';
-    }
-    
+    }    
+        
     ob = { 
       meterno:aryDB[i]['METERNO'],
-      serialno:aryDB[i]['SERIALNO'],
+      name:aryDB[i]['ACCTNAME'],
+      addrss:aryDB[i]['ADDRESS1'],
+      serialno:aryDB[i]['SERIALNO'],      
+      mtrstat:aryDB[i]['MTRSTAT'],
       custno:aryDB[i]['CUSTNO'],
       lat:aryDB[i]['GEOLAT'],
-      lng:aryDB[i]['GEOLNG'],
-      curr_read:aryDB[i]['CURREAD'],
-      last_read:aryDB[i]['LASTREAD'],
+      lng:aryDB[i]['GEOLONG'],      
+      duedate:aryDB[i]['DUEDAT'],      
+      prev_date:aryDB[i]['LAST_DATE'],
+      prev_read:aryDB[i]['LAST_READ'],
+      curr_date:aryDB[i]['CURR_DATE'],            
+      curr_read:aryDB[i]['CURR_READ'],
+      monbill:aryDB[i]['MONBILL'],
+      avg:aryDB[i]['AVG'],
       photo:photo
     };
-  }else if(n==1){    //consumer
+  }else if(n==1){    //user
     ob = { 
       id:i,
-      custno:aryDB[i]['CUSTNO'],
-      name:aryDB[i]['ACCTNAME'],
-      addrss:aryDB[i]['ADDRESS1']
-    };  
-  }else if(n==2){    //user
+      userid:aryDB[i]['USERNO'],
+      pword:aryDB[i]['PWORD'],
+      username:aryDB[i]['ACCTNAME'],
+      areano:aryDB[i]['AREANO']
+    };    
+  }else if(n==2){    //util
     ob = { 
       id:i,
-      userid:aryDB[i]['userid'],
-      pword:aryDB[i]['pword'],
-      username:aryDB[i]['username'],
-      axtype:aryDB[i]['axtype']
+      flatrate:aryDB[i]['FLATRATE'],
+      mincub:aryDB[i]['MINCUB'],
+      ratecub:aryDB[i]['RATECUB']    
+    };
+  }else if(n==3){    //sysfile
+    ob = { 
+      id:i,
+      ip:CURR_IP
     };
   }
   
@@ -245,25 +276,42 @@ function saveMeterToIDX() {
   putMeterToIDX();
 }
 async function putMeterToIDX(){
-  var v_meterno=document.getElementById('inp_meterno').value.toUpperCase();
-  //alert(v_meterno);
+  var v_meterno=document.getElementById('mtr_no').innerHTML;
+  var v_custno=JBE_GETFLD('custno',iDB_METER,'meterno',v_meterno);
+
+  //alert(v_meterno+' custno: '+v_custno);
   //var aryMeter=JBE_GETARRY(iDB_METER,'meterno',v_meterno);
 
   var ob;
   var photo=document.getElementById('mtr_pic').src;  
-  if(photo){      
+    
+  if(photo){          
     await JBE_BLOB(0,photo).then(result => photo=result);
   }else{
     photo='';
   }
-
-  var monbill=save_monbill(document.getElementById('mtr_bill').value);
   
+  var monbill=save_monbill(document.getElementById('mtr_bill').innerHTML);
+  var prev_date=document.getElementById('mtr_from').innerHTML;
+  var curr_date=document.getElementById('mtr_to').getAttribute('data-date');
+  var instruct=JBE_DATE_FORMAT(prev_date,'MMM DD, YYYY')+' To '+JBE_DATE_FORMAT(curr_date,'MMM DD, YYYY');
+  if(!prev_date){
+    instruct=JBE_DATE_FORMAT(curr_date,'MMM DD, YYYY');
+  }
+  //alert(curr_date+' save '+curr_date);
   ob = {
-    meterno:v_meterno,    
-    trandate:sysDate,
+    meterno:v_meterno,
+    acctno2:v_custno,    
+    trandate:curr_date,
+    prev_date:prev_date,    
+    curr_date:curr_date,
     month_bill:monbill,
-    reading:document.getElementById('mtr_curr').innerHTML,
+    prev_read:document.getElementById('mtr_prev').innerHTML,
+    curr_read:document.getElementById('mtr_curr').innerHTML,    
+    used:document.getElementById('mtr_used').innerHTML,
+    stat:document.getElementById('mtr_stat').getAttribute('data-stat'),
+    duedate:document.getElementById('mtr_due').getAttribute('data-duedate'),
+    instruct:instruct,
     amount:document.getElementById('mtr_amount').innerHTML,
     photo:photo
   };  
@@ -309,12 +357,21 @@ function getMeterFromIDX(v_meterno) {
         if(cursor.value.meterno == v_meterno){
           ob = {    
             meterno:cursor.value.meterno,       
-            trandate:cursor.value.trandate,  
+            acctno2:cursor.value.acctno2,       
+            trandate:cursor.value.trandate,              
+            curr_date:cursor.value.curr_date,
+            prev_date:cursor.value.prev_date,
             month_bill:cursor.value.month_bill,  
-            reading:cursor.value.reading,
+            curr_read:cursor.value.curr_read,
+            prev_read:cursor.value.prev_read,
+            used:cursor.value.used,
+            stat:cursor.value.stat,
+            duedate:cursor.value.duedate,
+            instruct:cursor.value.instruct,    
             amount:cursor.value.amount,
             photo:cursor.value.photo
           };
+
           aryIDB[0]=ob;  
         }
         cursor.continue();
@@ -353,10 +410,18 @@ function getAllTranMeterFromIDX() {
         var key = cursor.primaryKey;
         var ob;        
         ob = {    
-          meterno:cursor.value.meterno,    
-          trandate:cursor.value.trandate,     
-          month_bill:cursor.value.month_bill,     
-          reading:cursor.value.reading,
+          meterno:cursor.value.meterno,       
+          acctno2:cursor.value.acctno2,       
+          trandate:cursor.value.trandate,              
+          curr_date:cursor.value.curr_date,
+          prev_date:cursor.value.prev_date,
+          month_bill:cursor.value.month_bill,  
+          curr_read:cursor.value.curr_read,
+          prev_read:cursor.value.prev_read,
+          used:cursor.value.used,
+          stat:cursor.value.stat,
+          duedate:cursor.value.duedate,
+          instruct:cursor.value.instruct,    
           amount:cursor.value.amount,
           photo:cursor.value.photo
         };

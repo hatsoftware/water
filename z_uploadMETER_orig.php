@@ -35,9 +35,8 @@ if($request == 3){
     
     $img=$aryItems[$i]['photo'];
 
-    $img = str_replace('data:image/jpeg;base64,', '', $img);
-    $img = str_replace(' ', '+', $img);
-    $photo = base64_decode($img);
+    $img_data = file_get_contents($img);
+    $photo = $base64_encode($img_data);
 
     //$photo=file_get_contents($img);
     //$photo=load_file('gfx/jham.png');
@@ -67,7 +66,7 @@ if($request == 3){
     if($stmt->rowCount()){
       //update
       $sql="UPDATE custjrnl SET MONBILL=:month_bill,PICFILE=:photo,TRANSDAT=:trandate,PREVDAT=:prev_date,
-          PRVREAD=:prev_read,CURREAD=:curr_read,MTRUSED=:used,MTRSTAT=:stat,INSTRUCT=:instruct,DUEAMT=:amount
+          PRVREAD=:prev_read,CURREAD=:curr_read,MTRUSED=:used,MTRSTAT=:stat,INSTRUCT=:instruct,DUEAMT=:amount,larawan=:larawan
           where  ACCTNO2=:acctno2 and MONBILL=:month_bill";
       $stmt = $DBserver->prepare($sql);
       $stmt->execute(array(
@@ -80,14 +79,15 @@ if($request == 3){
         ':prev_read'  => $prev_read,
         ':used'  => $used,
         ':stat'  => $stat,      
-        ':instruct'  => $instruct,        
+        ':instruct'  => $instruct,
+        ':larawan' => $photo,
         ':amount'  =>  $amount
       ));		  
     }else{
       //add
       $f_new=true;
-      $sql="INSERT INTO `custjrnl` (ACCTNO2,TRANSDAT,MONBILL,PICFILE,PREVDAT,PRVREAD,CURREAD,MTRUSED,MTRSTAT,INSTRUCT,DUEAMT) 
-          VALUES (:acctno2,:trandate,:month_bill,:photo,:prev_date,:prev_read,:curr_read,:used,:stat,:instruct,:amount)";
+      $sql="INSERT INTO `custjrnl` (ACCTNO2,TRANSDAT,MONBILL,PICFILE,PREVDAT,PRVREAD,CURREAD,MTRUSED,MTRSTAT,INSTRUCT,DUEAMT,larawan) 
+          VALUES (:acctno2,:trandate,:month_bill,:photo,:prev_date,:prev_read,:curr_read,:used,:stat,:instruct,:amount,:larawan)";
       $stmt = $DBserver->prepare($sql);
       $stmt->execute(array(
         ':acctno2'  => $acctno2,
@@ -100,6 +100,7 @@ if($request == 3){
         ':used'  => (float)$used,
         ':stat'  => $stat,      
         ':instruct'  => $instruct,
+        ':larawan' => $photo,
         ':amount'  =>  $amount
       ));
     }

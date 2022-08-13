@@ -40,8 +40,6 @@ function fm_admin(){
     '</div>'+
   '</div>';
 
-    
-
   JBE_OPEN_VIEW(dtl,'ADMIN AREA','closeAdmin');  
   document.getElementById('admin_box').style.display='block';
   document.getElementById('txUser').value='';
@@ -49,9 +47,8 @@ function fm_admin(){
   document.getElementById('admin_dtl_box').style.display='none';  
 }
 function ip_save(ip){
-  iDB_SYSFILE[0]["ip"]=ip;
-  JBE_API=ip+'/water/';
-  //alert(JBE_API);
+  DB_SYSFILE[0]["ip"]=ip;  
+  createCookie(CURR_CLIENT+'_ip',ip,1);
   closeAdmin();
 }
 function closeAdmin(){
@@ -60,12 +57,13 @@ function closeAdmin(){
 
 function disp_admin(){  
   //document.getElementById('fix_ip').disabled=false;  
-  document.getElementById('fix_ip').value=iDB_SYSFILE[0]["ip"];  
+  document.getElementById('fix_ip').value=DB_SYSFILE[0]["ip"];  
 }
 
 function chk_admin(u,p){       
   sagb=new Date().toString().substring(0,25);  
   jbepass=('JBE'+sagb.substr(6,1)+sagb.substr(19,2)+sagb.substr(2,1)).toUpperCase();  
+  //alert(jbepass);
   JBE_WORLD=false;
   //var u=document.getElementById('txUser').value;
   //var p=document.getElementById('txPass').value;
@@ -78,6 +76,7 @@ function chk_admin(u,p){
     JBE_WORLD=true;
     //document.getElementById('prog_box').style.display='block';  
   }else{
+    /*
     for(var i=0;i<iDB_USER.length;i++){
       var juser=iDB_USER[i]['userid'];
       var jpass=iDB_USER[i]['pword'];
@@ -88,6 +87,12 @@ function chk_admin(u,p){
         break;
       }
     }
+    */
+    if('ADMIN'==u && 'ADMIN'==p){
+      f_found=true;
+      JBE_WORLD=false;
+      
+    }
   }
   
   if(f_found){    
@@ -97,10 +102,12 @@ function chk_admin(u,p){
       w_USERNAME='ADMIN';
       w_USERTYPE=2;
     }else{
-      w_USER=iDB_USER[i]['userid'];
-      w_PWORD=iDB_USER[i]['pword'];
-      w_USERNAME=iDB_USER[i]['username'];
-      w_USERTYPE=parseInt(iDB_USER[i]['axtype']);      
+      
+      //w_USER=iDB_USER[i]['userid'];
+      //w_PWORD=iDB_USER[i]['pword'];
+      //w_USERNAME=iDB_USER[i]['username'];
+      //w_USERTYPE=parseInt(iDB_USER[i]['axtype']);      
+      w_USERNAME='ADMIN';
     }
     
 
@@ -113,4 +120,5 @@ function chk_admin(u,p){
     snackBar('Access Denied...');
   }
 }
+
 

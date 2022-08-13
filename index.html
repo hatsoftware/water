@@ -13,6 +13,7 @@
 
 <!--link rel="canonical" href="https://aidfimonitoring.com/app"/-->
 
+<link rel="stylesheet" href="print.css">
 <link rel="stylesheet" href="./app_styles.css">
 <link rel="manifest" href="./manifest.webmanifest">
 
@@ -25,7 +26,7 @@
 <!-- ****************************************************************** -->
 <!-- ****************************************************************** -->
 <script src="js/eruda.min.js"></script>
-<!--script>eruda.init();</script-->
+<script>eruda.init();</script>
 <title>WATERWORKS APP</title>
 <script>  
   var CURR_CLIENT='WATER';
@@ -202,7 +203,7 @@
   
   var DB_UPLOAD=[];
   var DB_METER=[];    var iDB_METER=[];     var iDB_TRANMETER=[];
-  var DB_CONSUMER=[]; var iDB_CONSUMER=[];  
+  var DB_UTIL=[]; var iDB_UTIL=[];  
   var DB_USER=[];     var iDB_USER=[];
   var DB_SYSFILE=[];  var iDB_SYSFILE=[]; 
 
@@ -218,6 +219,7 @@
   var f_reload=true;
 
   var CURR2_BACKER=0;
+  var CURR_BRGYNO='';
 
   const JBE_HEADER = {
     "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
@@ -315,6 +317,7 @@
   var CURR_USERID=''; 
   var CURR_USERNAME='';    
   var CURR_AXTYPE=0;
+  var CURR_IP='';
 
   var CURR2_COMMUNITY='';
   var CURR2_METERS=0;    
@@ -341,13 +344,6 @@
         <span>Admin Area</span>
       </div>      
     </a> 
-
-    <a href="javascript:fm_meter()" class="nav_menu">
-      <div style="width:100%;">
-        <img src="gfx/icon-192x192.png" alt="fm meter reading image"/>
-        <span>Meter Reading</span>
-      </div>      
-    </a>   
     
     <a href="javascript:fm_download_data()" class="nav_menu">
       <div style="width:100%;">
@@ -358,12 +354,12 @@
 
     <hr> 
 
-    <a href="javascript:logout()" class="nav_menu">
+    <!--a href="javascript:logout()" class="nav_menu">
       <div style="width:100%;">
         <img src="gfx/jclose.png" alt="download image" />
         <span>Log Out</span>
       </div>      
-    </a>
+    </a-->
         
   </div>      
 </div>
@@ -530,6 +526,9 @@
       <div id="btn_2" style="width:100%;height:auto;text-align:center;margin-top:10px;background:none;" >      
         <input type="button" onclick="fm_upload()" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Upload"/>
       </div>
+      <div id="btn_3" style="display:none;width:100%;height:auto;text-align:center;margin-top:10px;background:none;" >      
+        <input type="button" onclick="fm_exp()" style="width:60%;height:50px;border-radius:10px;font-size:18px;font-weight:bold;" value="Experiment"/>
+      </div>
 
     </div>
 
@@ -655,20 +654,23 @@
     </div>  
 
     <div id="meter_client" style="width:100%;height:auto;padding:5px 5px 0px 5px;margin-top:0px;background:none;">
-      <div style="width:100%;height:50px;padding:5px;border:1px solid lightgray;">
-        <input type="text" id="inp_meterno" data-custno="" data-lat="" data-lng="" style="float:left;width:70%;height:100%;font-size:20px;text-transform:uppercase;text-align:center;border:1px solid black;background-color:none;" value="" placeholder="Enter Meter No."/>
-        <input type="button" id="btn_meterno" onclick="chk_meter()" class="color_head" style="float:right;width:50px;height:100%;border-radius:5px;text-align:center;border:0px solid black;" value="GO"/>        
+      <div style="width:100%;height:50px;padding:5px;border:1px solid lightgray;">        
+          <input type="text" id="inp_meterno" data-custno="" data-lat="" data-lng="" style="float:left;width:80%;height:100%;font-size:20px;text-transform:uppercase;text-align:center;border:1px solid black;background-color:none;" value="" placeholder="Enter Meter No."/>        
+          <input type="button" id="btn_meterno" style="float:right;width:40px;height:100%;border-radius:5px;text-align:center;border:0px solid black;" onclick="chk_meter(inp_meterno.value)" class="color_head" value="GO"/>           
       </div>
     </div>
       
     <div style="width:100%;height:auto;padding:5px;margin-top:0px;border:0px solid lightgray;color:black;background:none;">    
       <div id="id_no" class="class_mtr0" style="display:none;margin-top:0px;padding:10px 0 0 2px;">
         <span class="class_mtr1">Meter No: </span>
-        <span id="mtr_no" class="class_mtr2"></span>
+        <span id="mtr_no" class="class_mtr2" data-avg=0></span>
       </div> 
       <div class="class_mtr0">
         <span class="class_mtr1">Name: </span>
-        <span id="mtr_name" class="class_mtr2"></span>
+        <span id="mtr_name" class="class_mtr2" style="width:50%;"></span>
+        <span style="float:right;width:25%;height:100%;padding:3px;background:none;">          
+          <input type="button" id="btn_look" style="float:right;width:40px;height:100%;border-radius:5px;text-align:center;border:0px solid black;font-weight:bold;margin-left:10px;" value="..." class="color_head" onclick="sel_name()" />
+        </span>
       </div> 
       <div class="class_mtr0">
         <span class="class_mtr1">Address: </span>
@@ -678,16 +680,53 @@
         <span class="class_mtr1">Serial No: </span>          
         <span id="mtr_serialno" class="class_mtr2"></span>
       </div>
+      <div class="class_mtr0" style="height:25px;">
+        <span class="class_mtr1">Status: </span>          
+        <span id="mtr_stat" data-stat=0 class="class_mtr2" style="width:50%;"></span>
+        <span style="float:right;width:25%;height:100%;padding:0px;">
+          <button id="btn_stat" style="float:right;width:40px;height:100%;font-weight:bold;margin-right:3px;border-radius:5px;" class="color_head" onclick="sel_stat()">...</button>
+        </span>
+      </div>
+      <div class="class_mtr0" style="height:25px;">
+        <span class="class_mtr1">Due Date: </span>          
+        <span id="mtr_due" data-duedate="" class="class_mtr2" style="width:50%;"></span>
+        <span style="float:right;width:25%;height:100%;padding:0px;">
+          <button id="btn_due" style="float:right;width:40px;height:100%;font-weight:bold;margin-right:3px;border-radius:5px;" class="color_head" onclick="sel_due()">...</button>
+        </span>
+      </div>
     </div>
 
     <div style="width:100%;height:200px;padding:5px;font-size:12px;margin-top:0px;border:0px solid black;color:black;background:none;">    
 
-      <div style="width:100%;height:20%;text-align:center;padding:5px;font-weight:bold;border:1px solid black;color:black;background:none;">
-        <div style="float:left;width:50%;height:100%;padding:5px;">BILLING MONTH OF: </div>
-        <input id="mtr_bill" type="button" class="color_head" data-value="" onclick="sel_date()" style="float:right;width:50%;height:100%;padding:4px;border-radius:5px;border:1px solid black;color:black;color:white;" />
-      </div>
+      <div style="width:100%;height:35%;text-align:center;padding:0px;font-weight:bold;border:1px solid black;color:black;background:none;">
 
-      <div style="width:100%;height:15%;border:0px solid black;color:black;background:white;">
+        <div style="width:100%;height:50%;padding:2px;font-weight:bold;border:0px solid black;color:black;background:none;">
+          <div style="float:left;width:auto;height:100%;padding:6px 0 0 0;text-align:right;background:none;">BILLING MONTH FOR: </div>
+          <div id="mtr_bill" data-value="" style="float:left;margin-left:1%;font-size:22px;font-weight:bold;width:auto;height:100%;padding:2px 0 0 0;color:black;color:navy;background:none;"></div>
+          <button id="btn_bill" style="float:right;width:40px;height:100%;font-weight:bold;margin-right:3px;border-radius:5px;" class="color_head" onclick="sel_period()">...</button>
+        </div>
+        
+        <!--div style="width:100%;height:50%;padding:5px;border:0px solid black;color:black;background:none;">      
+          <div style="width:100%;height:100%;padding:2px;border:1px solid black;color:black;background:none;">      
+            <span class="class_mtr1" style="float:left;width:20%;">Period: </span>
+            <input type="text" id="mtr_period" data-from="" data-to="" class="class_mtr2" style="float:left;width:80%;font-size:14px;" />
+          </div>   
+        </div-->   
+        
+        <div style="width:100%;height:50%;padding:5px;text-align:center;border:0px solid black;color:black;background:none;">      
+          <div style="float:left;width:50%;height:100%;padding:2px;border:0px solid black;color:black;background:none;">      
+            <div class="class_mtr1" style="float:left;width:25%;">From: </div>
+            <div id="mtr_from" data-date="" class="class_mtr2" style="float:left;width:75%;font-size:14px;border:1px solid navy;"></div>
+          </div>   
+          <div style="float:left;width:50%;height:100%;padding:2px;border:0px solid black;color:black;background:none;">      
+            <div class="class_mtr1" style="float:left;width:25%;">To: </div>
+            <div id="mtr_to" data-date="" class="class_mtr2" style="float:left;width:75%;font-size:14px;border:1px solid navy;"></div>
+          </div>   
+        </div>   
+          
+      </div> 
+
+      <div style="display:block;width:100%;height:15%;border:0px solid black;color:black;background:none;">
         <div class="mtr_0" style="float:left;width:50%;height:100%;border:1px solid black;padding:5px;">
           <span class="class_mtr1" style="width:50%;">Previous : </span>
           <span id="mtr_prev" class="class_mtr2" style="width:50%;font-size:14px;"></span>
@@ -699,10 +738,15 @@
       </div> 
 
       <div style="width:100%;height:65%;border:0px solid black;color:black;background:white;">
-        <div class="mtr_0" style="float:left;width:50%;height:100%;border:1px solid black;padding:10px;">
-          <div id="mtr_amount" style="width:100%;height:20%;margin-top:15%;color:navy;font-size:18px;font-weight:bold;text-align:center;border:0px solid black;padding:2px;"></div>
-          <div style="width:100%;height:3px;margin-top:5px;text-align:center;padding:0px;background:black;"></div>
-          <div style="width:100%;height:50%;margin-top:2px;font-size:14px;font-weight:bold;text-align:center;border:0px solid black;padding:2px;">Amount Due</div>
+        <div class="mtr_0" style="float:left;width:50%;height:100%;text-align:center;border:0px solid black;padding:0px;">
+          <div style="width:100%;height:50%;border:1px solid black;padding:5px;">
+            <div style="width:100%;height:50%;font-size:12px;font-weight:bold;text-align:center;border:0px solid black;padding:5px 0 0 0;">CU. M Used</div>
+            <div id="mtr_used" style="width:100%;height:50%;color:navy;font-size:18px;font-weight:bold;text-align:center;border:0px solid black;padding:0px;">0.00</div>                        
+          </div>
+          <div style="width:100%;height:50%;border:1px solid black;padding:5px;">
+            <div style="width:100%;height:50%;font-size:12px;font-weight:bold;text-align:center;border:0px solid black;padding:5px 0 0 0;">Amount Due</div>
+            <div id="mtr_amount" style="width:100%;height:50%;color:navy;font-size:18px;font-weight:bold;text-align:center;border:0px solid black;padding:0px;"></div>                        
+          </div>
         </div>   
         <div class="mtr_0" style="float:right;width:50%;height:100%;border:1px solid black;padding:5px;">
           <div style="width:100%;height:100%;text-align:center;border:1px solid black;padding:2px;">
@@ -711,98 +755,172 @@
         </div>   
       </div> 
 
+      <!--button onclick="chgPic()">Change Pic</button-->
+
     </div> 
 
   </div>  
 
 </div>
 
-<div id="printableArea" style="display:none;width:219px;height:auto;font-size:12px;font-family: Arial Narrow,Arial,sans-serif; border:0px solid black;background:red;">
-  the quick 
+<div id="jticket" style="display:none;font-size:32px;background:none;height:100%;width:100%;">
+  <div class="ticket" style="overflow:auto;">
+    <!--img src="./logo.png" alt="Logo"-->
+    <p class="centered">METER READINGS
+        <br>Address line 1
+        <br>Address line 2</p>
+    <table>
+        <thead>
+            <tr>
+                <th class="quantity">Q.</th>
+                <th class="description">Description</th>
+                <th class="price">$$</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="quantity">1.00</td>
+                <td class="description">ARDUINO</td>
+                <td class="price">$25.00</td>
+            </tr>
+            <tr>
+                <td class="quantity">2.00</td>
+                <td class="description">JAVABOOK</td>
+                <td class="price">$10.00</td>
+            </tr>
+            <tr>
+                <td class="quantity">1.00</td>
+                <td class="description">STICKER PACK</td>
+                <td class="price">$10.00</td>
+            </tr>
+            <tr>
+                <td class="quantity"></td>
+                <td class="description">TOTAL</td>
+                <td class="price">$55.00</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="centered">Thanks for your purchase!
+        <br>https://hatsoftware.github.io</p>
+  </div>
+  <!--button id="btnPrint" class="hidden-print">Print</button-->
+  <!--script src="script.js"></script-->
+  <div style="text-align:center;font-size:8px;">HAT SOFTWARE 2022 </div>
 </div>
 
-<div id="xxprintableArea" style="display:none;width:219px;height:auto;font-size:12px;font-family: Arial Narrow,Arial,sans-serif; border:0px solid black;background:red;">
+<div id="printableArea" style="display:none;margin:0 auto;font-family:Arial Narrow,Arial,sans-serif;font-size:12px;padding:2px;border:1px solid black;background:none;height:500px;width:219px;">  
 
-  <div style="width:219px;height:auto;font-size:12px;font-family:Arial Narrow,Arial,sans-serif; margin-top:10px;border:0px solid gold;">
+  <div style="width:100%;height:auto;margin-top:50px;font-size:14px;font-family:Arial Narrow,Arial,sans-serif;">
     <div id="prnHead1" style="text-align:center;font-weight:bold;"></div>
     <div id="prnHead2" style="text-align:center;"></div>
     <div id="prnHead3" style="text-align:center;"></div>
-    <div style="margin-top:10px;text-align:center;font-weight:bold;">W A T E R   B I L L</div>
-    <div style="margin-top:10px;width:100%;height:20px;padding:0 0 0 20px;border:0px solid green;">    
-      <div style="float:left;width:30%;height:100%;">Meter No. </div>      
-      <div id="prnMeterno" style="float:left;width:65%;height:100%;font-size:16px;font-weight:bold;"></div>
-    </div>
+    <div style="margin:20px;text-align:center;border:2px solid black;font-size:18px;font-weight:bold;">W A T E R   B I L L</div>   
+  </div>
+
+  <div style="margin-top:10px;width:100%;height:20px;">    
+    <div style="float:left;height:100%;padding:3px 0 5px 0;">Account No. </div>      
+    <div id="prnCustno" style="float:left;height:100%;font-size:16px;font-weight:bold;"></div>
+  </div>
+  
+  <div style="margin-top:0px;width:100%;height:20px;">    
+    <div style="float:left;height:100%;padding:3px 0 5px 0;">Meter No. </div>      
+    <div id="prnMeterno" style="float:left;height:100%;font-size:16px;font-weight:bold;"></div>
   </div>
 
   
-  <div style="margin-top:10px;width:219px;height:auto;font-size:12px;font-family:Arial Narrow,Arial,sans-serif; margin-top:10px;border:0px solid gold;">
+  <div style="margin-top:10px;width:100%;height:auto;font-family:Arial Narrow,Arial,sans-serif;">
     <div id="prnName" style="width:100%;font-weight:bold;font-size:14px;"></div>
     <div id="prnAddress" style="width:100%;"></div>    
-    <div style="width:100%;">Serial No. <span id="prnSerialno"></span></div>
+    <div style="width:100%;">Serial No.: <span id="prnSerialno"></span></div>
+    <div style="width:100%;">Meter Status: <span id="prnStat"></span></div>
   </div>
   
-  <div style="margin-top:10px;width:200px;height:auto;font-size:12px;font-family: Arial Narrow,Arial,sans-serif;padding:0 0 0 19px;border:1px solid green;">    
+  <div style="margin-top:10px;width:100%;height:auto;font-family: Arial Narrow,Arial,sans-serif;padding:0 0 0 10px;">    
     
-    <div class="class_prn" style="width:100%;height:15px;">    
+    <div class="xclass_prn" style="width:100%;height:15px;">    
       <div style="float:left;width:35%;height:100%;">Date</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnDate" style="float:left;width:60%;height:100%;"></div>
+      <div id="prnDate" style="float:left;width:60%;height:100%;font-style:bold;"></div>
     </div>
     
     
     <div style="width:100%;height:15px;">    
       <div style="float:left;width:35%;height:100%;">No. of Days</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnDays" style="float:left;width:60%;height:100%;"></div>
+      <div id="prnDays" style="float:left;width:60%;height:100%;font-style:bold;"></div>
     </div>
     <div style="width:100%;height:15px;">    
       <div style="float:left;width:35%;height:100%;">Billing Month</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnBill" style="float:left;width:60%;height:100%;"></div>
+      <div id="prnBillMon" style="float:left;width:60%;height:100%;font-style:bold;"></div>
     </div>
-    <div style="width:100%;height:15px;">    
-      <div style="float:left;width:30%;height:100%;">Billing Period</div>
-      <div style="float:left;width:5%;height:100%;background:cyan;"> : </div>
-      <div id="prnBill" style="float:left;width:55%;height:100%;">Oct 20 2021 - Nov 20 2021</div>
-    </div>
-    <div style="width:100%;height:15px;">    
-      <div style="float:left;width:35%;height:100%;">Prev. Reading</div>
+    <div style="width:100%;height:15px;background:none;">    
+      <div style="float:left;width:35%;height:100%;">Billing Period</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnPrev" style="float:left;width:60%;height:100%;"></div>
+      <div id="prnPeriod" style="float:left;width:60%;height:100%;font-style:bold;"></div>
+    </div>
+    
+    <div style="width:100%;height:15px;">    
+      <div style="float:left;width:35%;height:100%;">Previous Rdg</div>
+      <div style="float:left;width:5%;height:100%;background:none;"> : </div>
+      <div id="prnPrev" style="float:left;width:60%;height:100%;font-style:bold;"></div>
     </div>
     <div style="width:100%;height:15px;">    
-      <div style="float:left;width:40%;height:100%;">Present Reading</div>
+      <div style="float:left;width:35%;height:100%;">Present Rdg</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnCurr" style="float:left;width:55%;height:100%;"></div>
+      <div id="prnCurr" style="float:left;width:60%;height:100%;"font-style:bold;></div>
     </div>
     <div style="width:100%;height:15px;">    
-      <div style="float:left;width:35%;height:100%;">Amount</div>
+      <div style="float:left;width:35%;height:100%;">CU. M. Used</div>
       <div style="float:left;width:5%;height:100%;background:none;"> : </div>
-      <div id="prnAmount" style="float:left;width:60%;height:100%;;"></div>
+      <div id="prnUsed" style="float:left;width:60%;height:100%;font-style:bold;"></div>
+    </div>
+    <div style="width:100%;height:20px;">    
+      <div style="float:left;width:35%;height:100%;font-style:bold;padding:2px 0 0 0;">Amount</div>
+      <div style="float:left;width:5%;height:100%;padding:2px 0 0 0;"> : </div>
+      <div id="prnAmount" style="float:left;width:60%;height:100%;font-size:16px;font-weight:bold;"></div>
+    </div>
+
+    <div style="width:100%;height:20px;">    
+      <div style="float:left;width:35%;height:100%;font-style:bold;padding:2px 0 0 0;">Due Date</div>
+      <div style="float:left;width:5%;height:100%;padding:2px 0 0 0;"> : </div>
+      <div id="prnDuedate" style="float:left;width:60%;height:100%;font-size:16px;font-weight:bold;"></div>
     </div>
     
   </div>
 </div>
 
-<!-- *************************PAGES***************************************************
-******************************************************************************** -->
+<!-- *************************PAGES*************************************************** -->
 <div id="page_upload" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:0px;">
   <div style="width:100%;height:0px;"></div> 
   <div class="back_main">
-    <div id="back_meter" onclick="showMainPage()" class="back_class">
-      <img id="back_view_meter" src="gfx/jback.png" style="height:100%;" />
+    <div id="back_upload" onclick="showMainPage()" class="back_class">
+      <img id="back_view_upload" src="gfx/jback.png" style="height:100%;" />
       <span>Back</span>
     </div>
-    <div id="cap_meter" class="cap_class">Batch Upload</div>
-    <div id="cap_mid_meter" class="cap_mid_class"></div>
+    <div id="cap_upload" class="cap_class">Batch Upload</div>
+    <div id="cap_mid_upload" class="cap_mid_class"></div>
   </div>
   
   <div id="page_dtl_upload" class="myView_dtl" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
   </div>  
 </div>  
-
-<!-- *************************PAGES***************************************************
-******************************************************************************** -->
+<!-- *************************PAGES*************************************************** -->
+<div id="page_exp" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:0px;">
+  <div style="width:100%;height:0px;"></div> 
+  <div class="back_main">
+    <div id="back_exp" onclick="showMainPage()" class="back_class">
+      <img id="back_view_exp" src="gfx/jback.png" style="height:100%;" />
+      <span>Back</span>
+    </div>
+    <div id="cap_exp" class="cap_class">Batch Upload</div>
+    <div id="cap_mid_exp" class="cap_mid_class"></div>
+  </div>
+  
+  <div id="page_dtl_exp" class="myView_dtl" style="width:100%;height:100%;padding:5px;overflow:auto;border:0px solid black;color:black;background:white;">    
+  </div>  
+</div> 
+<!-- *************************PAGES*************************************************** -->
 <div id="page_setting" data-open=0 class="myView page_class" style="display:none;height:100%;margin-top:0px;padding:5px;">   
   <div style="height:30px;width:100%;padding:0px;text-align:left;color:black;background-color:none;">
     <div id="back_setting" onclick="closeSetting();" class="back_class">
@@ -1112,23 +1230,43 @@
     </a> 		     
   </div>
 
+  <div id="mnu_exp" class="menu_class" style="display:none;width:100%;height:100%;">  
+    <a href="javascript:do_uploadMETER()" style="float:left;width:25%;height:100%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jham.png"  style="height:100%;" alt="save image" />          
+      </div>        
+      <div class="footer_fonts">Experiment</div>    
+    </a> 		     
+  </div>
+
   <div id="mnu_meter" class="menu_class" style="display:none;width:100%;height:100%;">  
     <div style="margin-top:13px;text-align:center;font-size:14px;">Meter Reader version 1.01</div>
   </div>
+  
+  <div id="mnu_print" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;padding:5px;">  
+    <button id="btnPrint" class="hidden-print" style="float:left;height:100%;width:100px;font-weight:bold;">Print </button>
+    <button onclick="close_print()" class="hidden-print" style="float:right;margin-left:10px;height:100%;width:100px;font-weight:bold;">Close</button>
+  </div>
 
   <div id="mnu_get_meter" class="menu_class" style="display:none;width:100%;height:100%;text-align:center;background:none;">  
-    <a href="javascript:get_meter()" style="float:left;width:25%;height:100%;background: none;">      
+    <a id="div_doCamera" href="javascript:get_meter()" style="float:left;width:25%;height:100%;background: none;">      
       <div class="footer_gfxs">
         <img src="gfx/jcam.png"  style="height:100%;" alt="save image" />          
       </div>        
       <div class="footer_fonts">Read</div>    
     </a> 
-	<a href="javascript:do_print()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
+	  <a id="div_doPrint" href="javascript:do_print()" style="float:left;width:25%;height:100%;margin-left:13%;background: none;">      
       <div class="footer_gfxs">
         <img src="gfx/jprn.png"  style="height:100%;" alt="prn image" />          
       </div>        
       <div class="footer_fonts">Print</div>
-    </a> 		  
+    </a> 	
+    <a id="div_doSave" href="javascript:do_save()" style="display:none;float:left;width:25%;height:100%;margin-left:13%;background: none;">      
+      <div class="footer_gfxs">
+        <img src="gfx/jsave.png"  style="height:100%;" alt="prn image" />          
+      </div>        
+      <div class="footer_fonts">Save</div>
+    </a>	  
     <a href="javascript:init_meter()" style="float:right;width:25%;height:100%;margin-left:0%;background: none;">      
       <div class="footer_gfxs">
         <img src="gfx/jclose.png"  style="height:100%;" alt="send image" />          
@@ -1198,12 +1336,15 @@
 <script type='text/javascript' src='js/enadlib.js'></script>
 
 <script type='text/javascript' src='app_meter.js'></script>
-<script type='text/javascript' src="app_meter2.js"></script>
 <script type='text/javascript' src="app_upload.js"></script>
+<script type='text/javascript' src="app_download.js"></script>
+<script type='text/javascript' src="app_print.js"></script>
 <script type='text/javascript' src='app_admin.js'></script>
 <script type='text/javascript' src='app_pages.js'></script>
 <script type='text/javascript' src='app_main.js'></script>
 <script type='text/javascript' src='app_db.js'></script>
+
+<script src="script.js"></script>
 
 <script> 
   
@@ -1213,7 +1354,14 @@
   CURR_USER=readCookie(CURR_CLIENT+'_pword');
   CURR_USERNAME=readCookie(CURR_CLIENT+'_username');      
   CURR_AXTYPE=readCookie(CURR_CLIENT+'_axtype');   
+  CURR_IP=readCookie(CURR_CLIENT+'_ip');   
   
+  if(!CURR_IP){     
+    CURR_IP='127.0.0.1'; 
+    createCookie(CURR_CLIENT+'_ip',CURR_IP,1);    
+  }
+  DB_SYSFILE[0]={ "ip":CURR_IP };
+
   var d = new Date();  
   var n = d.toLocaleTimeString();   
   
@@ -1285,16 +1433,51 @@
   
   function jeff(){  
     alert(           
-      '\nJBE_API: '+JBE_API+      
-      '\n\nDB_CONSUMER: '+DB_CONSUMER.length+      
-      '\nDB_METER: '+DB_METER.length+
+      '\nJBE_API: '+JBE_API+            
+      '\n\nDB_METER: '+DB_METER.length+
       '\nDB_USER: '+DB_USER.length+
-      //'\nDB_SYSFILE: '+DB_SYSFILE.length+
-      '\n\niDB_CONSUMER: '+iDB_CONSUMER.length+      
-      '\niDB_METER: '+iDB_METER.length+
+      '\nDB_UTIL: '+DB_UTIL.length+      
+      '\nDB_SYSFILE: '+DB_SYSFILE.length+
+      '\n\niDB_METER: '+iDB_METER.length+
       '\niDB_USER: '+iDB_USER.length+
+      '\niDB_UTIL: '+iDB_UTIL.length+
       '\niDB_SYSFILE: '+iDB_SYSFILE.length
     );
+  }
+
+  function fm_exp(){   
+    window.history.pushState({ noBackExitsApp: true }, '');
+    f_MainPage=false;
+      
+    openPage('page_exp');    
+    showMenu('mnu_exp');
+
+    var DB_EXP=[];
+    showProgress(true);
+    axios.post('z_exp.php', { request: 0 },JBE_HEADER)     
+    .then(function (response) { 
+      console.log(response.data);              
+      DB_EXP = response.data;          
+      showProgress(false);
+      alert('DB_EXP: '+DB_EXP.length);
+      var dtl='';
+      for(var i=0;i<DB_EXP.length;i++){      
+        var v_consumer=DB_EXP[i]['ACCTNO2'];
+        var v_addrss=DB_EXP[i]['TRANSDAT'];
+        var v_photo='data:image/jpeg;base64,' + DB_EXP[i]['PICFILE'];    
+        dtl+=
+          '<div style="width:100%;height:100px;border:1px solid red;">'+
+            //'<div style="float:left;width:50%;height:100%;">'+v_consumer+'</div>'+
+            '<div style="float:left;width:50%;height:100%;">'+v_addrss+'</div>'+
+            '<div style="float:right;width:50%;height:100%;"><img style="height:100%;" src="'+v_photo+'"/></div>'+
+          '</div>';
+      }
+      document.getElementById('page_dtl_exp').innerHTML=dtl;
+    })    
+    .catch(function (error) {       
+      console.log(error); 
+      showProgress(false);      
+    });
   }
 
   function showProgress(v){

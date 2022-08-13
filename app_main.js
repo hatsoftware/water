@@ -8,8 +8,8 @@ function start_app(){
     document.getElementById('page_main').innerHTML='This App runs in mobile platform only.';    
     return;    
   }  
-
-  getAllDataFromIDX();
+  
+  getAllDataFromIDX(false);
   init_app();  
   showMainPage(); 
   // Page is loaded
@@ -26,12 +26,14 @@ function start_app(){
         item.style.backgroundImage = `url(${item.dataset.src})`;
     };
   }); 
+  if(DB_USER.length==0){
+    //snackBar('Upload Files Now...');   
+  }
 }
 
 function init_app(){
   //if(CURR_METERNO=='NONE' || CURR_METERNO=='' || CURR_METERNO==null) {       
   document.getElementById('logger').style.color='navy';
-  //alert(CURR_USERNAME);
   if(!CURR_USER) {       
     document.getElementById('logger').innerHTML="Please Log In";
     document.getElementById('theReader').innerHTML='-';
@@ -255,160 +257,4 @@ function ZOOM_CLOSE(){
   document.getElementById('msg_zoom').style.display='none';
   document.getElementById('div_msg_items').style.display='block';
   document.getElementById('fm_msg').style.pointerEvents='auto';
-}
-
-function fm_download_data(){ 
-  if(!CURR_USER){
-    //showLogin();
-    //return;
-  }  
-  window.history.pushState({ noBackExitsApp: true }, '');
-  f_MainPage=false;
-  var dtl=
-    '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:0px solid lightgray;background:white;">'+  
-
-      '<div style="width:100%;height:15%;font-size:22px;font-weight:bold;padding:6% 0 0 0;background:none;">'+
-        '<div>Download Data</div>'+
-        '<div style="font-size:14px;color:navy;"></div>'+      
-      '</div>'+
-      
-      '<div style="width:100%;height:70%;padding:5%;border:0px solid darkgray;background:none;">'+  
-        '<div style="width:80%;height:100px;margin:10%;padding:10px;border-radius:5px;border:1px solid darkgray;background:none;">'+  
-          '<div style="width:100%;height:30%;font-weight:bold;padding:2px 0 0 0;background:none;">Files to be Downloaded</div>'+      
-          '<div id="div_dd1" style="width:100%;height:70%;padding:7px 0 0 0;background:none;"></div>'+        
-        '</div>'+
-
-        '<div style="width:80%;height:100px;margin:10%;padding:10px;border-radius:5px;border:1px solid darkgray;background:none;">'+  
-          '<div style="width:100%;height:30%;font-weight:bold;padding:2px 0 0 0;background:none;">Current Data</div>'+      
-          '<div id="div_dd2" style="width:100%;height:70%;padding:7px 0 0 0;background:none;"></div>'+        
-        '</div>'+
-      '</div>'+
-      
-      '<div style="width:100%;height:15%;padding:3% 0 0 0;text-align:center;background:none;">'+
-        '<input id="btn_download" type="button" onclick="download_data()" class="color_head" style="width:80%;height:50px;border-radius:8px;font-size:18px;" value="Download Now" />'+
-      '</div>'+
-    '</div>';
-
-  JBE_OPEN_VIEW(dtl,'Download Facility','close_fm_download_data');
-  //document.getElementById('cap_myView1').innerHTML='Download Main Data';
-
-  DB_METER=[]; DB_CONSUMER=[]; DB_USER=[]; 
-  //alert('app main: '+JBE_API);
-  showProgress(true);
-  axios.post('z_tanan.php', { request: 0, meterno: CURR_METERNO },JBE_HEADER)     
-  .then(function (response) { 
-    console.log(response.data.length);        
-    
-    DB_METER = response.data[0];  
-    DB_CONSUMER = response.data[1];    
-    DB_USER = response.data[2]; 
-
-    JBE_ONLINE=true;
-    document.getElementById('logger').style.color='navy';
-    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
-
-    dtl=
-      '<div style="width:100%;height:100%;background:none;">'+
-        '<div style="width:100%;height:20px;">Meter File : '+DB_METER.length+'</div>'+
-        '<div style="width:100%;height:20px;">Consumer File : '+DB_CONSUMER.length+'</div>'+        
-      '</div>';
-    document.getElementById('div_dd1').innerHTML=dtl;
-
-    dtl=
-      '<div style="width:100%;height:100%;background:none;">'+
-        '<div style="width:100%;height:20px;">Meter File : '+iDB_METER.length+'</div>'+
-        '<div style="width:100%;height:20px;">Consumer File : '+iDB_CONSUMER.length+'</div>'+        
-      '</div>';
-    document.getElementById('div_dd2').innerHTML=dtl;
-    showProgress(false);
-    console.log('DB HERE... '+JBE_API);
-    snackBar('Ready to Download...');
-  })    
-  .catch(function (error) { 
-    JBE_ONLINE=false;
-    console.log(error); 
-    showProgress(false);
-    document.getElementById('btn_download').disabled=true;
-    MSG_SHOW(vbOk,"ERROR: ",error,function(){},function(){});
-  });
-
-}
-
-function close_fm_download_data(){
-  var vmode=document.getElementById('download_box').getAttribute('data-mode');
-  //alert(vmode);
-  showMainPage();
-}
-
-function download_data() {  
-  DB_CONSUMER=[]; DB_METER=[];
-  DB_UPLOAD=[];  
-  clearStore('Meter');
-  clearStore('Consumer');  
-  clearStore('TranMeter');
-  clearStore('User');
-  alert(JBE_API);
-  axios.post('z_tanan.php', { request: 0, meterno: CURR_METERNO },JBE_HEADER)     
-  .then(function (response) { console.log(response.data);        
-
-    DB_METER = response.data[0];  
-    DB_CONSUMER = response.data[1];    
-    DB_USER = response.data[2];    
-    DB_SYSFILE = response.data[3];    
-
-    document.getElementById('logger').style.color='navy';
-    document.getElementById('logger').innerHTML='Date: '+sysDate+' &nbsp;&nbsp;&nbsp;Time: '+sysTime;
-
-
-    //clearStore('Meter');clearStore('Consumer');
-    saveDataToIDX(DB_METER,0);
-    saveDataToIDX(DB_CONSUMER,1);
-    saveDataToIDX(DB_USER,2);
-    //saveDataToIDX(DB_SYSFILE,3);
-    
-    DB_CONSUMER=[];
-    DB_METER=[];
-    DB_USER=[];   
-    console.log('Data Downloaded...');
-    getAllDataFromIDX();
-    MSG_SHOW(vbOk,"Download Successful :","Download Successful.",function(){ JBE_CLOSE_VIEW(); },function(){});
-    
-  })    
-  .catch(function (error) { 
-    JBE_ONLINE=false;
-    console.log(error); 
-    //showOffline();
-    snackBar(error);
-    //getProfile_IDB();
-  });  
-}
-
-function get_db() {  
-  MSG_SHOW(vbOk,"Test ","going to get db",function(){ go_get_db(); },function(){});
-  return; 
-}
-
-function go_get_db(){
-  showProgress(true);
-  DB_CHART=[]; 
-  axios.post('z_test.php', { request: 0 },JBE_HEADER)     
-  .then(function (response) { console.log(response.data);        
-    DB_CHART = response.data;  
-    var x='';
-    for (var i=0;i < DB_CHART.length;i++){
-      //MSG_SHOW(vbOk,"Test Data No. : ",DB_CHART[i]['DESCRIPT'],function(){},function(){});
-      //x=x+i+' = '+DB_CHART[i]['DESCRIPT']+'\n';
-      x+=(i+1)+' = '+DB_CHART[i]['ACCTNAME']+'\n';
-    }
-    showProgress(false);
-    //alert(x);
-    alert(
-      'Total Records: '+DB_CHART.length+'\n'+x
-    );
-  })    
-  .catch(function (error) { 
-    showProgress(false);
-    console.log(error); 
-    snackBar(error);
-  });  
 }

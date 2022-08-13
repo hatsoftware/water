@@ -1,0 +1,46 @@
+
+td,
+th,
+tr,
+table {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+}
+
+td.description,
+th.description {
+    width: 175px;
+    max-width: 175px;
+}
+
+td.quantity,
+th.quantity {
+    width: 140px;
+    max-width: 140px;
+    word-break: break-all;
+}
+
+td.price,
+th.price {
+    width: 140px;
+    max-width: 140px;
+    word-break: break-all;
+}
+
+.centered {
+    text-align: center;
+    align-content: center;
+}
+
+.ticket {
+    width: 455px;
+    max-width: 455px;
+}
+
+@media print {
+    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+        font-weight:bold;
+    }
+}
