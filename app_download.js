@@ -5,7 +5,7 @@ function fm_download_data(){
     }  
     window.history.pushState({ noBackExitsApp: true }, '');
     f_MainPage=false;
-    var api_dir='file:///C:/wamp/www/water/';
+    var api_dir='localhost/water/';
     var dtl=
       '<div id="download_box" data-mode=0 style="width:100%;height:100%;font-size:18px;text-align:center;padding:5px;border:0px solid lightgray;background:white;">'+  
   
